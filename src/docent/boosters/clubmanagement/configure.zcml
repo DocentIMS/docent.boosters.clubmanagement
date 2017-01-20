@@ -1,0 +1,37 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    i18n_domain="docent.boosters.clubmanagement">
+
+  <i18n:registerTranslations directory="locales" />
+
+  <includeDependencies package="." />
+
+  <grok:grok package="." />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="docent.boosters.clubmanagement"
+      directory="profiles/default"
+      description="Installs the docent.boosters.clubmanagement add-on."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      post_handler=".setuphandlers.post_install"
+      />
+
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="docent.boosters.clubmanagement (uninstall)"
+      directory="profiles/uninstall"
+      description="Uninstalls the docent.boosters.clubmanagement add-on."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      post_handler=".setuphandlers.uninstall"
+      />
+
+
+  <utility
+      factory=".setuphandlers.HiddenProfiles"
+      name="docent.boosters.clubmanagement-hiddenprofiles" />
+
+</configure>

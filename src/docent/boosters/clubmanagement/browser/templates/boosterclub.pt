@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="docent.boosters.clubmanagement">
+<body>
+
+<metal:main fill-slot="main">
+    <tal:main-macro metal:define-macro="main">
+
+    <div tal:replace="structure provider:plone.abovecontenttitle" />
+    <div class="club-info">
+        <div>Club Name:</div><div tal:content="context/title">#CLUB TITLE#</div>
+        <div>LWHS Organization:</div><div tal:content="context/booster_organization">#LWHS ORGANIZATION#</div>
+    </div>
+    <div class="club-officers">
+        <div>President:</div><div tal:content="context/club_president">#President#</div>
+        <div>Secretary:</div><div tal:content="context/club_secretary">#Secretary#</div>
+        <div>Treasurer:</div><div tal:content="context/club_treasurer">#Treasurer#</div>
+        <div>LWHS Advisor:</div><div tal:content="context/club_advisor">#Advisor#</div>
+    </div>
+    <div class="agreement-file">
+        <div>Agreement:</div><div tal:define="hasFile view/hasFile">
+                                 <a href="#" target="blank" tal:condition="hasFile" tal:attributes="href string: ${context/absolute_url}/@@display-file/agreement_file">
+                                     Agreement File
+                                 </a> (opens in new page)
+                                 <span tal:condition="not:hasFile" tal:replace="string: No Agreement Form Linked" />
+                             </div>
+
+    </div>
+    <div class="agreement" tal:define="tou context/agreement_bool">
+        <div tal:condition="tou">Membership agreement accepted.</div>
+        <div tal:condition="not:tou">Membership agreement NOT accepted.</div>
+    </div>
+    <div tal:replace="structure provider:plone.belowcontenttitle" />
+    <div tal:replace="structure provider:plone.abovecontentbody" />
+
+    <div tal:replace="structure provider:plone.belowcontentbody" />
+    </tal:main-macro>
+</metal:main>
+
+</body>
+</html>

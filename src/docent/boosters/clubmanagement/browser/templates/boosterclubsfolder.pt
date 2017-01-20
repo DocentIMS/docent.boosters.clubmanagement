@@ -1,0 +1,131 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="docent.boosters.clubmanagement">
+<body>
+
+<metal:main fill-slot="main">
+    <tal:main-macro metal:define-macro="main">
+
+    <div tal:replace="structure provider:plone.abovecontenttitle" />
+    <h1>Approved Booster Clubs</h1>
+    <div tal:replace="structure provider:plone.belowcontenttitle" />
+    <div tal:replace="structure provider:plone.abovecontentbody" />
+    <p>These boosters have been approved by the LWHS Booster Executive Boosters. If your group is not listed here, it has not been approved.</p>
+    <p>If you have a question contact the <a href="#" tal:attributes="href string:mailto:${context/executive_secretary_email}&subject=LWHS%20Boosters%20Club%20Question">Executive Secretary</a>.</p>
+
+    <div class="pat-autotoc autotabs" data-pat-autotoc="section:section;levels:h2;">
+    <tal:clubSections tal:define="active_clubs view/testing_brains;
+                                  approved_clubs view/approved_club_brains;
+                                  submitted_clubs view/submitted_club_brains;
+                                  pending_clubs view/pending_club_brains;
+                                  member_clubs view/member_club_brains">
+    <section tal:condition="active_clubs">
+        <h2>Active</h2>
+        <table>
+            <tr>
+                <th>Club Name</th>
+                <th>LWHS Activity</th>
+                <th>Date Approved</th>
+            </tr>
+            <tr tal:repeat="active_club active_clubs"
+                tal:attributes="class repeat/active_club/parity">
+                <td><a href="#" tal:attributes="href active_club/getURL"><span tal:replace="active_club/Title" /></a></td>
+                <td tal:content="active_club/booster_organization|nothing"></td>
+                <td tal:content="active_club/approval_date|nothing"></td>
+            </tr>
+        </table>
+    </section>
+    <section tal:condition="not:active_clubs">
+        <h2>Active</h2>
+        <p>There are no active clubs at this time.</p>
+    </section>
+    <section tal:condition="approved_clubs">
+        <h2>Approved</h2>
+        <table>
+            <tr>
+                <th>Club Name</th>
+                <th>LWHS Activity</th>
+                <th>Date Approved</th>
+            </tr>
+            <tr tal:repeat="approved_club approved_clubs"
+                tal:attributes="class repeat/approved_club/parity">
+                <td><a href="#" tal:attributes="href approved_club/getURL"><span tal:replace="approved_club/Title" /></a></td>
+                <td tal:content="approved_club/booster_organization|nothing"></td>
+                <td tal:content="approved_club/approval_date|nothing"></td>
+            </tr>
+        </table>
+    </section>
+    <section tal:condition="not:approved_clubs">
+        <h2>Approved</h2>
+        <p>There are no approved clubs at this time.</p>
+    </section>
+    <section tal:condition="submitted_clubs">
+        <h2>Submitted</h2>
+        <table>
+            <tr>
+                <th>Club Name</th>
+                <th>LWHS Activity</th>
+                <th>Date Approved</th>
+            </tr>
+            <tr tal:repeat="submitted_club submitted_clubs"
+                tal:attributes="class repeat/submitted_club/parity">
+                <td><a href="#" tal:attributes="href submitted_club/getURL"><span tal:replace="submitted_club/Title" /></a></td>
+                <td tal:content="submitted_club/booster_organization|nothing"></td>
+                <td tal:content="submitted_club/approval_date|nothing"></td>
+            </tr>
+        </table>
+    </section>
+    <section tal:condition="not:submitted_clubs">
+        <h2>Submitted</h2>
+        <p>There are no submitted clubs at this time.</p>
+    </section>
+    <section tal:condition="pending_clubs">
+        <h2>Pending</h2>
+        <table>
+            <tr>
+                <th>Club Name</th>
+                <th>LWHS Activity</th>
+                <th>Date Approved</th>
+            </tr>
+            <tr tal:repeat="pending_club pending_clubs"
+                tal:attributes="class repeat/pending_club/parity">
+                <td><a href="#" tal:attributes="href pending_club/getURL"><span tal:replace="pending_club/Title" /></a></td>
+                <td tal:content="pending_club/booster_organization|nothing"></td>
+                <td tal:content="pending_club/approval_date|nothing"></td>
+            </tr>
+        </table>
+    </section>
+    <section tal:condition="not:pending_clubs">
+        <h2>Pending</h2>
+        <p>There are no pending clubs at this time.</p>
+    </section>
+    <section tal:condition="member_clubs">
+        <h2>My Clubs</h2>
+        <table>
+            <tr>
+                <th>Club Name</th>
+                <th>LWHS Activity</th>
+                <th>Date Approved</th>
+            </tr>
+            <tr tal:repeat="member_club member_clubs"
+                tal:attributes="class repeat/member_club/parity">
+                <td><a href="#" tal:attributes="href member_club/getURL"><span tal:replace="member_club/Title" /></a></td>
+                <td tal:content="member_club/booster_organization|nothing"></td>
+                <td tal:content="member_club/approval_date|nothing"></td>
+            </tr>
+        </table>
+    </section>
+    </tal:clubSections>
+    </div>
+    <div tal:replace="structure provider:plone.belowcontentbody" />
+    </tal:main-macro>
+</metal:main>
+
+</body>
+</html>
+
+nowhere@mozilla.org?cc=nobody@mozilla.org&subject=This%20is%20the%20subject
