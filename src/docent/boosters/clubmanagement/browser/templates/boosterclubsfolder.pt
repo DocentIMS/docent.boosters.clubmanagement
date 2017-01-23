@@ -5,6 +5,14 @@
       lang="en"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="docent.boosters.clubmanagement">
+<head>
+<metal:block fill-slot="style_slot">
+        <link rel="stylesheet" type="text/css"
+            tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+            tal:attributes="href string:${navroot}/++resource++docent.boosters.clubmanagement/boosterclubs.css"
+            />
+</metal:block>
+</head>
 <body>
 
 <metal:main fill-slot="main">
@@ -15,10 +23,10 @@
     <div tal:replace="structure provider:plone.belowcontenttitle" />
     <div tal:replace="structure provider:plone.abovecontentbody" />
     <p>These boosters have been approved by the LWHS Booster Executive Boosters. If your group is not listed here, it has not been approved.</p>
+    <p tal:condition="view/showProposalLink"><a href="" tal:attributes="href string: ${context/absolute_url}/@@booster-club-proposal">Propose New Booster Club</a></p>
     <p>If you have a question contact the <a href="#" tal:attributes="href string:mailto:${context/executive_secretary_email}&subject=LWHS%20Boosters%20Club%20Question">Executive Secretary</a>.</p>
-
     <div class="pat-autotoc autotabs" data-pat-autotoc="section:section;levels:h2;">
-    <tal:clubSections tal:define="active_clubs view/testing_brains;
+    <tal:clubSections tal:define="active_clubs view/active_club_brains;
                                   approved_clubs view/approved_club_brains;
                                   submitted_clubs view/submitted_club_brains;
                                   pending_clubs view/pending_club_brains;
@@ -63,26 +71,6 @@
         <h2>Approved</h2>
         <p>There are no approved clubs at this time.</p>
     </section>
-    <section tal:condition="submitted_clubs">
-        <h2>Submitted</h2>
-        <table>
-            <tr>
-                <th>Club Name</th>
-                <th>LWHS Activity</th>
-                <th>Date Approved</th>
-            </tr>
-            <tr tal:repeat="submitted_club submitted_clubs"
-                tal:attributes="class repeat/submitted_club/parity">
-                <td><a href="#" tal:attributes="href submitted_club/getURL"><span tal:replace="submitted_club/Title" /></a></td>
-                <td tal:content="submitted_club/booster_organization|nothing"></td>
-                <td tal:content="submitted_club/approval_date|nothing"></td>
-            </tr>
-        </table>
-    </section>
-    <section tal:condition="not:submitted_clubs">
-        <h2>Submitted</h2>
-        <p>There are no submitted clubs at this time.</p>
-    </section>
     <section tal:condition="pending_clubs">
         <h2>Pending</h2>
         <table>
@@ -103,7 +91,27 @@
         <h2>Pending</h2>
         <p>There are no pending clubs at this time.</p>
     </section>
-    <section tal:condition="member_clubs">
+    <section tal:condition="submitted_clubs">
+        <h2>Submitted</h2>
+        <table>
+            <tr>
+                <th>Club Name</th>
+                <th>LWHS Activity</th>
+                <th>Date Approved</th>
+            </tr>
+            <tr tal:repeat="submitted_club submitted_clubs"
+                tal:attributes="class repeat/submitted_club/parity">
+                <td><a href="#" tal:attributes="href submitted_club/getURL"><span tal:replace="submitted_club/Title" /></a></td>
+                <td tal:content="submitted_club/booster_organization|nothing"></td>
+                <td tal:content="submitted_club/approval_date|nothing"></td>
+            </tr>
+        </table>
+    </section>
+    <section tal:condition="not:submitted_clubs">
+        <h2>Submitted</h2>
+        <p>There are no submitted clubs at this time.</p>
+    </section>
+    <!--<section tal:condition="member_clubs">
         <h2>My Clubs</h2>
         <table>
             <tr>
@@ -118,7 +126,7 @@
                 <td tal:content="member_club/approval_date|nothing"></td>
             </tr>
         </table>
-    </section>
+    </section>-->
     </tal:clubSections>
     </div>
     <div tal:replace="structure provider:plone.belowcontentbody" />

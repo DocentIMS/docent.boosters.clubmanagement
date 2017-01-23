@@ -1,7 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="docent.boosters.clubmanagement">
 
   <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
@@ -11,28 +10,14 @@
       layer="docent.boosters.clubmanagement.interfaces.IDocentBoostersClubmanagementLayer"
       />
 
-    <adapter
-    for="Products.CMFCore.interfaces.IFolderish
-         zope.publisher.interfaces.browser.IDefaultBrowserLayer
-         plone.dexterity.interfaces.IDexterityFTI"
-    provides="zope.publisher.interfaces.browser.IBrowserPage"
-    factory=".booster_club_add.BoosterClubAddView"
-    name="booster_club"
-    />
-
-    <class class=".booster_club_add.BoosterClubAddView">
-        <require
-            permission="cmf.AddPortalContent"
-            interface="zope.publisher.interfaces.browser.IBrowserPage"
-            />
-    </class>
-
+  <!--<browser:page
+      for="docent.boosters.clubmanagement.content.booster_clubs_folder.IBoosterClubsFolder"
+      name="booster-club-proposal"
+      permission="zope2.View"
+      class=".booster_proposal_form.BoosterProposalForm"
+      /> -->
 
   <!-- Publish static files -->
-  <plone:static
-      name="docent.boosters.clubmanagement"
-      type="plone"
-      directory="static"
-      />
+
 
 </configure>

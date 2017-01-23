@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="example.dexterityforms"
+      metal:use-macro="context/main_template/macros/master">
+<head>
+<metal:block fill-slot="style_slot">
+        <link rel="stylesheet" type="text/css"
+            tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+            tal:attributes="href string:${navroot}/++resource++docent.boosters.clubmanagement/boosterclubs.css"
+            />
+</metal:block>
+</head>
+    <metal:block fill-slot="main">
+
+        <h1 class="documentFirstHeading" tal:content="view/label | nothing" />
+
+
+        <div id="content-core">
+            <metal:block use-macro="context/@@ploneform-macros/titlelessform" />
+        </div>
+
+    </metal:block>
+
+</html>

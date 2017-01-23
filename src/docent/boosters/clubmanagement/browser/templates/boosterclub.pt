@@ -5,34 +5,55 @@
       lang="en"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="docent.boosters.clubmanagement">
+<head>
+<metal:block fill-slot="style_slot">
+        <link rel="stylesheet" type="text/css"
+            tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+            tal:attributes="href string:${navroot}/++resource++docent.boosters.clubmanagement/boosterclubs.css"
+            />
+</metal:block>
+</head>
 <body>
 
 <metal:main fill-slot="main">
     <tal:main-macro metal:define-macro="main">
 
     <div tal:replace="structure provider:plone.abovecontenttitle" />
+    <div class="booster-club-content">
     <div class="club-info">
-        <div>Club Name:</div><div tal:content="context/title">#CLUB TITLE#</div>
-        <div>LWHS Organization:</div><div tal:content="context/booster_organization">#LWHS ORGANIZATION#</div>
+        <h3>Club Info</h3>
+        <ul>
+            <li>Club Name: <span tal:replace="context/title" /></li>
+            <li>LWHS Organization: <span tal:replace="context/booster_organization|nothing" /></li>
+        </ul>
     </div>
     <div class="club-officers">
-        <div>President:</div><div tal:content="context/club_president">#President#</div>
-        <div>Secretary:</div><div tal:content="context/club_secretary">#Secretary#</div>
-        <div>Treasurer:</div><div tal:content="context/club_treasurer">#Treasurer#</div>
-        <div>LWHS Advisor:</div><div tal:content="context/club_advisor">#Advisor#</div>
+        <h3>Club Officers</h3>
+        <ul>
+            <li>President: <span tal:replace="context/club_president" /></li>
+            <li>Secretary: <span tal:replace="context/club_secretary" /></li>
+            <li>Treasurer: <span tal:replace="context/club_treasurer" /></li>
+            <li>LWHS Advisor: <span tal:replace="context/club_advisor" /></li>
+        </ul>
     </div>
-    <div class="agreement-file">
-        <div>Agreement:</div><div tal:define="hasFile view/hasFile">
-                                 <a href="#" target="blank" tal:condition="hasFile" tal:attributes="href string: ${context/absolute_url}/@@display-file/agreement_file">
-                                     Agreement File
-                                 </a> (opens in new page)
-                                 <span tal:condition="not:hasFile" tal:replace="string: No Agreement Form Linked" />
-                             </div>
+    <div class="agreement-file" tal:define="hasFile view/hasFile">
+        <h3>Agreement File</h3>
+        <ul>
+            <li>Agreement: <a href="#" target="blank" tal:condition="hasFile" tal:attributes="href string: ${context/absolute_url}/@@display-file/agreement_file">
+                               Agreement File
+                           </a> (opens in new page)
+                            <span tal:condition="not:hasFile" tal:replace="string: No Agreement Form Linked" />
+                           </li>
+        </ul>
 
     </div>
     <div class="agreement" tal:define="tou context/agreement_bool">
-        <div tal:condition="tou">Membership agreement accepted.</div>
-        <div tal:condition="not:tou">Membership agreement NOT accepted.</div>
+        <h3>Agreement</h3>
+        <ul>
+            <li tal:condition="tou"><span tal:replace="string:Membership agreement accepted." /></li>
+            <li tal:condition="not:tou"><span tal:replace="string:Membership agreement NOT accepted." /></li>
+        </ul>
+    </div>
     </div>
     <div tal:replace="structure provider:plone.belowcontenttitle" />
     <div tal:replace="structure provider:plone.abovecontentbody" />

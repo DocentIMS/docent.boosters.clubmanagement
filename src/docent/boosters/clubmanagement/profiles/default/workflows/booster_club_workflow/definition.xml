@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<dc-workflow workflow_id="booster_club_workflow" title="Booster Club Workflow" description=" - Booster Club Workflow is based on simple publication workflow. States remain private save for the active workflow which is public." state_variable="review_state"         initial_state="submitted" manager_bypass="False" >
+ 
+ <permission>Access contents information</permission>
+ <permission>Change portal events</permission>
+ <permission>Modify portal content</permission>
+ <permission>View</permission>
+ <state state_id="active" title="Active" >
+  <description>Public.</description>
+  <exit-transition transition_id="return" />
+  <permission-map name="Access contents information" acquired="False">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+  <permission-map name="Change portal events" acquired="False">
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="Modify portal content" acquired="False">
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="False">
+   <permission-role>Anonymous</permission-role>
+  </permission-map>
+  
+  
+ </state>
+ <state state_id="approved" title="Approved" >
+  <description>Immediately upon being moved to Approved state, a transition guard checks to determine if two of the people listed have received the “Best Practices” training (that is, they are in the Training group).  Note: never check the Advisor for training, they don’t receive training</description>
+  <exit-transition transition_id="activate" />
+  <exit-transition transition_id="manual_activate" />
+  <exit-transition transition_id="return" />
+  <permission-map name="Access contents information" acquired="False">
+   <permission-role>Contributor</permission-role>
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reader</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="Change portal events" acquired="False">
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="Modify portal content" acquired="False">
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="False">
+   <permission-role>Contributor</permission-role>
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reader</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  
+  
+ </state>
+ <state state_id="pending" title="Pending" >
+  <description>Waiting to be reviewed, not editable by the owner.</description>
+  <exit-transition transition_id="approve" />
+  <permission-map name="Access contents information" acquired="False">
+   <permission-role>Contributor</permission-role>
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reader</permission-role>
+   <permission-role>Reviewer</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="Change portal events" acquired="False">
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="Modify portal content" acquired="False">
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reviewer</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="False">
+   <permission-role>Contributor</permission-role>
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reader</permission-role>
+   <permission-role>Reviewer</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  
+  
+ </state>
+ <state state_id="submitted" title="Submitted" >
+  <description>Initial Booster Club State.  If all values accounted for, auto transition to Pending</description>
+  <exit-transition transition_id="make_pending" />
+  <exit-transition transition_id="manual_make_pending" />
+  <permission-map name="Access contents information" acquired="False">
+   <permission-role>Contributor</permission-role>
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reader</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="Change portal events" acquired="False">
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="Modify portal content" acquired="False">
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="False">
+   <permission-role>Contributor</permission-role>
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Owner</permission-role>
+   <permission-role>Reader</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  
+  
+ </state>
+ <transition transition_id="activate" title="Activate" new_state="active" trigger="AUTOMATIC" before_script="" after_script="" >
+  <description>Puts your club into the Active state.</description>
+  <action url="%(content_url)s/content_status_modify?workflow_action=activate" category="workflow" icon="">Activate Club</action>
+  <guard >
+   <guard-permission>Boosters: Manage Clubs</guard-permission>
+   <guard-expression>here/officersHaveTraining</guard-expression
+   >
+  </guard>
+  
+ </transition>
+ <transition transition_id="approve" title="Approve" new_state="approved" trigger="USER" before_script="" after_script="" >
+  <action url="%(content_url)s/content_status_modify?workflow_action=approve" category="workflow" icon="">Approve Club</action>
+  <guard >
+   <guard-permission>Boosters: Manage Clubs</guard-permission>
+   <guard-expression>here/verifyClubOfficers</guard-expression
+   >
+  </guard>
+  
+ </transition>
+ <transition transition_id="make_pending" title="Make Pending" new_state="pending" trigger="AUTOMATIC" before_script="" after_script="" >
+  <action url="%(content_url)s/content_status_modify?workflow_action=make_pending" category="workflow" icon="">Make Pending</action>
+  <guard >
+  </guard>
+  
+ </transition>
+ <transition transition_id="manual_activate" title="Activate (Manual)" new_state="active" trigger="USER" before_script="" after_script="" >
+  <action url="%(content_url)s/content_status_modify?workflow_action=activate_manual" category="workflow" icon="">Activate (Manual)</action>
+  <guard >
+   <guard-permission>Boosters: Manage Clubs</guard-permission>
+   <guard-expression>here/officersHaveTraining</guard-expression
+   >
+  </guard>
+  
+ </transition>
+ <transition transition_id="manual_make_pending" title="Make Pending (Manual)" new_state="pending" trigger="USER" before_script="" after_script="" >
+  <action url="%(content_url)s/content_status_modify?workflow_action=make_pending_manual" category="workflow" icon="">Make Pending (Manual)</action>
+  <guard >
+   <guard-permission>Boosters: Manage Clubs</guard-permission>
+  </guard>
+  
+ </transition>
+ <transition transition_id="return" title="Return" new_state="pending" trigger="USER" before_script="" after_script="" >
+  <action url="%(content_url)s/content_status_modify?workflow_action=return" category="workflow" icon="">Return</action>
+  <guard >
+   <guard-permission>Boosters: Manage Clubs</guard-permission>
+  </guard>
+  
+ </transition>
+ <worklist worklist_id="reviewer_queue" title="" >
+  <description>Reviewer tasks</description>
+  <action url="%(portal_url)s/search?review_state=pending" category="global" icon="">Pending (%(count)d)</action>
+  <guard >
+   <guard-permission>Review portal content</guard-permission>
+  </guard>
+  <match name="review_state" values="pending" />
+ </worklist>
+ <variable variable_id="action" for_catalog="False" for_status="True" update_always="True" >
+  <description>Previous transition</description>
+  <default>
+   
+   <expression>transition/getId|nothing</expression>
+  </default>
+  <guard >
+  </guard>
+ </variable>
+ <variable variable_id="actor" for_catalog="False" for_status="True" update_always="True" >
+  <description>The ID of the user who performed the previous transition</description>
+  <default>
+   
+   <expression>user/getId</expression>
+  </default>
+  <guard >
+  </guard>
+ </variable>
+ <variable variable_id="comments" for_catalog="False" for_status="True" update_always="True" >
+  <description>Comment about the last transition</description>
+  <default>
+   
+   <expression>python:state_change.kwargs.get('comment', '')</expression>
+  </default>
+  <guard >
+  </guard>
+ </variable>
+ <variable variable_id="review_history" for_catalog="False" for_status="False" update_always="False" >
+  <description>Provides access to workflow history</description>
+  <default>
+   
+   <expression>state_change/getHistory</expression>
+  </default>
+  <guard >
+   <guard-permission>Request review</guard-permission>
+   <guard-permission>Review portal content</guard-permission>
+  </guard>
+ </variable>
+ <variable variable_id="time" for_catalog="False" for_status="True" update_always="True" >
+  <description>When the previous transition was performed</description>
+  <default>
+   
+   <expression>state_change/getDateTime</expression>
+  </default>
+  <guard >
+  </guard>
+ </variable>
+ 
+</dc-workflow>

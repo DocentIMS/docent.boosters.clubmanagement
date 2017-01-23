@@ -1,3 +1,4 @@
+from collections import defaultdict, Counter
 import logging
 
 from plone import api
@@ -10,6 +11,8 @@ from zope import schema
 from docent.boosters.clubmanagement import _
 
 logger = logging.getLogger("Plone")
+
+from docent.group.vocabularies.vocabularies import TRAINED_MEMBERS_GROUP_ID
 
 class IBoosterClub(form.Schema):
     """
@@ -63,11 +66,11 @@ class IBoosterClub(form.Schema):
         required=False,
         default=False)
 
-    form.write_permission(approval_date='manageBoosterClubs')
-    approval_date = schema.Date(
-        title=_(u'Date Approved'),
-        description=_(u'This is a calculated field. Do not input.'),
-        required=False,)
+    # form.write_permission(approval_date='manageBoosterClubs')
+    # approval_date = schema.Date(
+    #     title=_(u'Date Approved'),
+    #     description=_(u'This is a calculated field. Do not input.'),
+    #     required=False,)
 
 @indexer(IBoosterClub)
 def organization_indexer(obj):
@@ -75,14 +78,65 @@ def organization_indexer(obj):
         return None
     return obj.booster_organization
 
-@indexer(IBoosterClub)
-def approval_date_indexer(obj):
-    if not getattr(obj, 'approval_date', None):
-        return None
-    return obj.approval_date
+# @indexer(IBoosterClub)
+# def approval_date_indexer(obj):
+#     if not getattr(obj, 'approval_date', None):
+#         return None
+#     return obj.approval_date
 
 
 class BoosterClub(Container):
     """
     Baseclass for BoosterClub based on Container
     """
+
+    def after_edit_processor(self):
+        """
+        all edits should change the workflow state back to pending
+        """
+        api.content.transition(obj=self, to_state='pending')
+
+    def verifyClubOfficers(self):
+        """
+        Officers cannot hold more than two positions.
+        :return:
+        """
+        context = self
+        club_officer_list = []
+        club_officer_list.append(context.club_president)
+        club_officer_list.append(context.club_secretary)
+        club_officer_list.append(context.club_treasurer)
+        club_officer_list.append(context.club_advisor)
+        officer_counter = Counter(club_officer_list)
+
+        for member_key in officer_counter.keys():
+            if officer_counter[member_key] > 2:
+                api.portal.show_message(message="%s cannot hold more than two officer positions for this club." % member_key,
+                                        request=context.REQUEST,
+                                        type='warn')
+                return False
+
+        return True
+
+    def officersHaveTraining(self):
+        context = self
+        club_officer_list = []
+        club_officer_list.append(context.club_president)
+        club_officer_list.append(context.club_secretary)
+        club_officer_list.append(context.club_treasurer)
+
+        has_training = 0
+
+        for club_officer in set(club_officer_list):
+            officer_groups = api.group.get_groups(username=club_officer)
+            for o_group in officer_groups:
+                if o_group.getId() == TRAINED_MEMBERS_GROUP_ID:
+                    has_training += 1
+
+        if has_training >= 2:
+            return True
+
+        api.portal.show_message(message="Waiting for club officers to be trained.",
+                                        request=context.REQUEST,
+                                        type='warn')
+        return False

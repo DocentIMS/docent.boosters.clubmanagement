@@ -49,7 +49,15 @@ class View(grok.View):
 
         current_user_data = api.user.get_current()
         current_user_id = current_user_data.getId()
+        current_user_groups = api.group.get_groups(user=current_user_data)
+
+        isBoosterMember = False
+        for user_group in current_user_groups:
+            if user_group.getId() == "Booster_Members":
+                isBoosterMember = True
+
         all_brains = active_club_brains + approved_club_brains + pending_club_brains + submitted_club_brains + testing_brains
+
         member_club_brains = []
         [member_club_brains.append(i) for i in all_brains if i.Creator == current_user_id]
 
@@ -60,8 +68,15 @@ class View(grok.View):
         self.member_club_brains = member_club_brains
         self.testing_brains = testing_brains
 
-        self.administrative_role = api.user.has_permission('manageBoosterClubs',
+        administrative_role = api.user.has_permission('manageBoosterClubs',
                                                            user=current_user_data,
                                                            obj=context)
+
+        self.adminisrative_role = administrative_role
+        self.showProposalLink = False
+
+        if not administrative_role and isBoosterMember:
+            self.showProposalLink = True
+
 
 

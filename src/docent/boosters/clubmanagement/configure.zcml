@@ -3,6 +3,8 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="docent.boosters.clubmanagement">
 
   <i18n:registerTranslations directory="locales" />
@@ -29,6 +31,22 @@
       post_handler=".setuphandlers.uninstall"
       />
 
+  <browser:resourceDirectory
+      name="docent.boosters.clubmanagement"
+      directory="static"
+      />
+
+  <permission
+      id="boosters.clubmanagement"
+      title="Boosters: Manage Clubs"
+      />
+
+
+  <subscriber
+      for="docent.boosters.clubmanagement.content.bootser_club.IBoosterClub
+      zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+      handler=".event_handlers.after_edit_processor"
+/>
 
   <utility
       factory=".setuphandlers.HiddenProfiles"
