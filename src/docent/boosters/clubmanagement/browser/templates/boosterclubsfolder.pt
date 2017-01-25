@@ -19,114 +19,95 @@
     <tal:main-macro metal:define-macro="main">
 
     <div tal:replace="structure provider:plone.abovecontenttitle" />
-    <h1>Approved Booster Clubs</h1>
+    <h1>Booster Clubs</h1>
     <div tal:replace="structure provider:plone.belowcontenttitle" />
     <div tal:replace="structure provider:plone.abovecontentbody" />
     <p>These boosters have been approved by the LWHS Booster Executive Boosters. If your group is not listed here, it has not been approved.</p>
     <p tal:condition="view/showProposalLink"><a href="" tal:attributes="href string: ${context/absolute_url}/@@booster-club-proposal">Propose New Booster Club</a></p>
     <p>If you have a question contact the <a href="#" tal:attributes="href string:mailto:${context/executive_secretary_email}&subject=LWHS%20Boosters%20Club%20Question">Executive Secretary</a>.</p>
     <div class="pat-autotoc autotabs" data-pat-autotoc="section:section;levels:h2;">
-    <tal:clubSections tal:define="active_clubs view/active_club_brains;
-                                  approved_clubs view/approved_club_brains;
-                                  submitted_clubs view/submitted_club_brains;
-                                  pending_clubs view/pending_club_brains;
-                                  member_clubs view/member_club_brains">
-    <section tal:condition="active_clubs">
+    <tal:clubSections tal:define="isAnon view/isAnon;
+                                  active_clubs view/active_club_objs;
+                                  approved_clubs view/approved_club_objs;
+                                  submitted_clubs view/submitted_club_objs;
+                                  pending_clubs view/pending_club_objs;
+                                  show_active python:view.showOrHideTabs(active_clubs);
+                                  show_approved python:view.showOrHideTabs(approved_clubs);
+                                  show_pending python:view.showOrHideTabs(pending_clubs);
+                                  show_submitted python:view.showOrHideTabs(submitted_clubs);">
+    <section>
         <h2>Active</h2>
         <table>
             <tr>
                 <th>Club Name</th>
                 <th>LWHS Activity</th>
                 <th>Date Approved</th>
+                <th tal:condition="not:isAnon">Submitted By</th>
             </tr>
             <tr tal:repeat="active_club active_clubs"
                 tal:attributes="class repeat/active_club/parity">
-                <td><a href="#" tal:attributes="href active_club/getURL"><span tal:replace="active_club/Title" /></a></td>
+                <td tal:condition="not:isAnon"><a href="#" tal:attributes="href active_club/absolute_url"><span tal:replace="active_club/Title" /></a></td>
+                <td tal:condition="isAnon"><span tal:replace="active_club/Title" /></td>
                 <td tal:content="active_club/booster_organization|nothing"></td>
                 <td tal:content="active_club/approval_date|nothing"></td>
+                <td tal:condition="not:isAnon" tal:content="python:view.getOwnerName(active_club)"></td>
             </tr>
         </table>
     </section>
-    <section tal:condition="not:active_clubs">
-        <h2>Active</h2>
-        <p>There are no active clubs at this time.</p>
-    </section>
-    <section tal:condition="approved_clubs">
+    <section tal:condition="show_approved">
         <h2>Approved</h2>
         <table>
             <tr>
                 <th>Club Name</th>
                 <th>LWHS Activity</th>
                 <th>Date Approved</th>
+                <th>Submitted By</th>
             </tr>
             <tr tal:repeat="approved_club approved_clubs"
                 tal:attributes="class repeat/approved_club/parity">
-                <td><a href="#" tal:attributes="href approved_club/getURL"><span tal:replace="approved_club/Title" /></a></td>
+                <td><a href="#" tal:attributes="href approved_club/absolute_url"><span tal:replace="approved_club/Title" /></a></td>
                 <td tal:content="approved_club/booster_organization|nothing"></td>
                 <td tal:content="approved_club/approval_date|nothing"></td>
+                <td tal:content="python:view.getOwnerName(approved_club)"></td>
             </tr>
         </table>
     </section>
-    <section tal:condition="not:approved_clubs">
-        <h2>Approved</h2>
-        <p>There are no approved clubs at this time.</p>
-    </section>
-    <section tal:condition="pending_clubs">
+    <section tal:condition="show_pending">
         <h2>Pending</h2>
         <table>
             <tr>
                 <th>Club Name</th>
                 <th>LWHS Activity</th>
                 <th>Date Approved</th>
+                <th>Submitted By</th>
             </tr>
             <tr tal:repeat="pending_club pending_clubs"
                 tal:attributes="class repeat/pending_club/parity">
-                <td><a href="#" tal:attributes="href pending_club/getURL"><span tal:replace="pending_club/Title" /></a></td>
+                <td><a href="#" tal:attributes="href pending_club/absolute_url"><span tal:replace="pending_club/Title" /></a></td>
                 <td tal:content="pending_club/booster_organization|nothing"></td>
                 <td tal:content="pending_club/approval_date|nothing"></td>
+                <td tal:content="python:view.getOwnerName(pending_club)"></td>
             </tr>
         </table>
     </section>
-    <section tal:condition="not:pending_clubs">
-        <h2>Pending</h2>
-        <p>There are no pending clubs at this time.</p>
-    </section>
-    <section tal:condition="submitted_clubs">
+    <section tal:condition="show_submitted">
         <h2>Submitted</h2>
         <table>
             <tr>
                 <th>Club Name</th>
                 <th>LWHS Activity</th>
                 <th>Date Approved</th>
+                <th>Submitted By</th>
             </tr>
             <tr tal:repeat="submitted_club submitted_clubs"
                 tal:attributes="class repeat/submitted_club/parity">
-                <td><a href="#" tal:attributes="href submitted_club/getURL"><span tal:replace="submitted_club/Title" /></a></td>
+                <td><a href="#" tal:attributes="href submitted_club/absolute_url"><span tal:replace="submitted_club/Title" /></a></td>
                 <td tal:content="submitted_club/booster_organization|nothing"></td>
                 <td tal:content="submitted_club/approval_date|nothing"></td>
+                <td tal:content="python:view.getOwnerName(submitted_club)"></td>
             </tr>
         </table>
     </section>
-    <section tal:condition="not:submitted_clubs">
-        <h2>Submitted</h2>
-        <p>There are no submitted clubs at this time.</p>
-    </section>
-    <!--<section tal:condition="member_clubs">
-        <h2>My Clubs</h2>
-        <table>
-            <tr>
-                <th>Club Name</th>
-                <th>LWHS Activity</th>
-                <th>Date Approved</th>
-            </tr>
-            <tr tal:repeat="member_club member_clubs"
-                tal:attributes="class repeat/member_club/parity">
-                <td><a href="#" tal:attributes="href member_club/getURL"><span tal:replace="member_club/Title" /></a></td>
-                <td tal:content="member_club/booster_organization|nothing"></td>
-                <td tal:content="member_club/approval_date|nothing"></td>
-            </tr>
-        </table>
-    </section>-->
     </tal:clubSections>
     </div>
     <div tal:replace="structure provider:plone.belowcontentbody" />

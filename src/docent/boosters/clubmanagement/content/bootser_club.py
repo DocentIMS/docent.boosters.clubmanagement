@@ -1,7 +1,9 @@
 from collections import defaultdict, Counter
+from datetime import date
 import logging
 
 from plone import api
+from plone.api.exc import MissingParameterError
 from plone.dexterity.content import Container
 from plone.directives import form
 from plone.indexer import indexer
@@ -66,23 +68,11 @@ class IBoosterClub(form.Schema):
         required=False,
         default=False)
 
-    # form.write_permission(approval_date='manageBoosterClubs')
-    # approval_date = schema.Date(
-    #     title=_(u'Date Approved'),
-    #     description=_(u'This is a calculated field. Do not input.'),
-    #     required=False,)
-
-@indexer(IBoosterClub)
-def organization_indexer(obj):
-    if obj.booster_organization is None:
-        return None
-    return obj.booster_organization
-
-# @indexer(IBoosterClub)
-# def approval_date_indexer(obj):
-#     if not getattr(obj, 'approval_date', None):
-#         return None
-#     return obj.approval_date
+    form.mode(approval_date='hidden')
+    approval_date = schema.Date(
+        title=_(u'Date Approved'),
+        description=_(u'This is a calculated field. Do not input.'),
+        required=False,)
 
 
 class BoosterClub(Container):
@@ -95,6 +85,10 @@ class BoosterClub(Container):
         all edits should change the workflow state back to pending
         """
         api.content.transition(obj=self, to_state='pending')
+
+    def set_approval_date(self):
+        today = date.today()
+        setattr(self, 'approval_date', today)
 
     def verifyClubOfficers(self):
         """
@@ -111,7 +105,20 @@ class BoosterClub(Container):
 
         for member_key in officer_counter.keys():
             if officer_counter[member_key] > 2:
-                api.portal.show_message(message="%s cannot hold more than two officer positions for this club." % member_key,
+                try:
+                    officer = api.user.get(username=member_key)
+                    fullname = officer.getProperty('fullname')
+                except MissingParameterError:
+                    fullname = "The member with id: %s" % member_key
+
+                if member_key == 'no_members':
+                    portal_msg = 'There are not enough officers to manage this club. ' \
+                                 'Please assign all officers before this club can be approved.'
+                else:
+                    portal_msg = "%s cannot hold more than two officer positions for this club. The " \
+                                 "club cannot be approved until this is changed." % fullname
+
+                api.portal.show_message(message=portal_msg,
                                         request=context.REQUEST,
                                         type='warn')
                 return False
@@ -128,6 +135,10 @@ class BoosterClub(Container):
         has_training = 0
 
         for club_officer in set(club_officer_list):
+            if club_officer == 'no_members':
+                continue
+            if club_officer is None:
+                continue
             officer_groups = api.group.get_groups(username=club_officer)
             for o_group in officer_groups:
                 if o_group.getId() == TRAINED_MEMBERS_GROUP_ID:
@@ -136,7 +147,8 @@ class BoosterClub(Container):
         if has_training >= 2:
             return True
 
-        api.portal.show_message(message="Waiting for club officers to be trained.",
+        api.portal.show_message(message="Waiting for club officers to be trained. Club cannot be activated until its "
+                                        "officers are trained.",
                                         request=context.REQUEST,
                                         type='warn')
         return False

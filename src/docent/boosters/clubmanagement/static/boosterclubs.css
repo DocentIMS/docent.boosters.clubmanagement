@@ -2,3 +2,5 @@
 
 .booster-club-content ul {list-style-type: none;
                           padding-left:0;}
+
+.portalMessage.warn {background: #f78686;}

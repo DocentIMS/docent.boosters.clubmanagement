@@ -148,7 +148,7 @@
   </guard>
   
  </transition>
- <transition transition_id="approve" title="Approve" new_state="approved" trigger="USER" before_script="" after_script="" >
+ <transition transition_id="approve" title="Approve" new_state="approved" trigger="USER" before_script="" after_script="updateApprovalDate" >
   <action url="%(content_url)s/content_status_modify?workflow_action=approve" category="workflow" icon="">Approve Club</action>
   <guard >
    <guard-permission>Boosters: Manage Clubs</guard-permission>

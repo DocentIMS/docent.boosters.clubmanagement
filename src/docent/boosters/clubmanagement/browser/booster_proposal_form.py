@@ -45,8 +45,7 @@ class IBoosterProposalForm(form.Schema):
                     u'You may submit your application, and it will be held until this requirement is met.',
         fields=['club_president',
                 'club_secretary',
-                'club_treasurer',
-                'club_advisor',]
+                'club_treasurer',]
     )
 
     club_president = schema.Choice(
@@ -64,6 +63,12 @@ class IBoosterProposalForm(form.Schema):
         vocabulary=u'docent.group.Booster_Members',
         )
 
+    fieldset('advisor_information',
+        label=u'Advisor Information',
+        description=u'',
+        fields=['club_advisor',]
+    )
+
     club_advisor = schema.Choice(
         title=_(u"LWHS Advisor"),
         vocabulary=u'docent.group.Advisors',
@@ -71,8 +76,8 @@ class IBoosterProposalForm(form.Schema):
 
     fieldset('agreement_upload',
         label=u'File',
-        description=u'1) We still need the paper form completed and uploaded.  Please download the Agreement.\n'
-                    u'2) Once completed, please upload the form.',
+        description=u'<p>1) We still need the paper form completed and uploaded.  Please download the Agreement.</p>'
+                    u'<p>2) Once completed, please upload the form.</p>',
         fields=['agreement_file',]
     )
 
@@ -113,6 +118,15 @@ class BoosterProposalForm(form.SchemaForm):
     def handleCancel(self, action):
         """User cancelled. Redirect back to the front page.
         """
+        context = self.context
+
+        request = context.REQUEST
+        response = request.response
+        response.redirect(context.absolute_url())
+
+        api.portal.show_message(message=u'Club Proposal Cancelled.',
+                                request=request,
+                                type='info')
 
     @button.buttonAndHandler(u'Submit')
     def handleApply(self, action):

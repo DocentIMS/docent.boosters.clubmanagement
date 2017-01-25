@@ -46,7 +46,13 @@
       for="docent.boosters.clubmanagement.content.bootser_club.IBoosterClub
       zope.lifecycleevent.interfaces.IObjectModifiedEvent"
       handler=".event_handlers.after_edit_processor"
-/>
+      />
+
+  <subscriber
+      for="docent.boosters.clubmanagement.content.booster_clubs_folder.IBoosterClubsFolder
+      zope.lifecycleevent.interfaces.IObjectCreatedEvent"
+      handler=".event_handlers.after_creation_processor"
+      />
 
   <utility
       factory=".setuphandlers.HiddenProfiles"

@@ -26,31 +26,39 @@ class View(grok.View):
                                      object_provides=IBoosterClub.__identifier__,
                                      review_state='active',
                                      sort_on='getObjPositionInParent')
+        active_club_objs = []
+        [active_club_objs.append(active_brain.getObject()) for active_brain in active_club_brains]
 
         approved_club_brains = catalog(path={'query': context_path, 'depth': 1},
                                        object_provides=IBoosterClub.__identifier__,
                                        review_state='approved',
                                        sort_on='getObjPositionInParent')
 
+        approved_club_objs = []
+        [approved_club_objs.append(approved_brain.getObject()) for approved_brain in approved_club_brains]
+
         submitted_club_brains = catalog(path={'query': context_path, 'depth': 1},
                                         object_provides=IBoosterClub.__identifier__,
                                         review_state='submitted',
                                         sort_on='getObjPositionInParent')
+
+        submitted_club_objs = []
+        [submitted_club_objs.append(submitted_brain.getObject()) for submitted_brain in submitted_club_brains]
 
         pending_club_brains = catalog(path={'query': context_path, 'depth': 1},
                                       object_provides=IBoosterClub.__identifier__,
                                       review_state='pending',
                                       sort_on='getObjPositionInParent')
 
-        testing_brains = catalog(path={'query': context_path, 'depth': 1},
-                                 object_provides=IBoosterClub.__identifier__,
-                                 review_state='private',
-                                 sort_on='getObjPositionInParent')
+        pending_club_objs = []
+        [pending_club_objs.append(pending_brain.getObject()) for pending_brain in pending_club_brains]
 
-        all_brains = active_club_brains + approved_club_brains + pending_club_brains + submitted_club_brains + testing_brains
-        member_club_brains = []
+        all_objs = active_club_objs + approved_club_objs + pending_club_objs + submitted_club_objs
 
-        if api.user.is_anonymous():
+        isAnon = api.user.is_anonymous()
+        self.isAnon = isAnon
+
+        if isAnon:
             current_user_groups = []
             administrative_role = False
         else:
@@ -61,19 +69,16 @@ class View(grok.View):
                                                            user=current_user_data,
                                                            obj=context)
 
-            [member_club_brains.append(i) for i in all_brains if i.Creator == current_user_id]
 
         isBoosterMember = False
         for user_group in current_user_groups:
             if user_group.getId() == "Booster_Members":
                 isBoosterMember = True
 
-        self.active_club_brains = active_club_brains
-        self.approved_club_brains = approved_club_brains
-        self.submitted_club_brains = submitted_club_brains
-        self.pending_club_brains = pending_club_brains
-        self.member_club_brains = member_club_brains
-        self.testing_brains = testing_brains
+        self.active_club_objs = active_club_objs
+        self.approved_club_objs = approved_club_objs
+        self.submitted_club_objs = submitted_club_objs
+        self.pending_club_objs = pending_club_objs
 
         self.adminisrative_role = administrative_role
         self.showProposalLink = False
@@ -81,5 +86,24 @@ class View(grok.View):
         if not administrative_role and isBoosterMember:
             self.showProposalLink = True
 
+    def getOwnerName(self, club_obj):
+        owner = club_obj.getOwner()
+        fullname = owner.getProperty('fullname')
+        if not fullname:
+            return 'Unknown'
 
+        return fullname
 
+    def showOrHideTabs(self, club_objs):
+        if self.adminisrative_role:
+            return True
+
+        if self.isAnon:
+            return False
+
+        current_member = api.user.get_current()
+        for club_obj in club_objs:
+            club_owner = club_obj.getOwner()
+            if club_owner.getId() == current_member.getId():
+                return True
+        return False

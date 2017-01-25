@@ -30,10 +30,10 @@
     <div class="club-officers">
         <h3>Club Officers</h3>
         <ul>
-            <li>President: <span tal:replace="context/club_president" /></li>
-            <li>Secretary: <span tal:replace="context/club_secretary" /></li>
-            <li>Treasurer: <span tal:replace="context/club_treasurer" /></li>
-            <li>LWHS Advisor: <span tal:replace="context/club_advisor" /></li>
+            <li>President: <span tal:replace="view/club_president" /></li>
+            <li>Secretary: <span tal:replace="view/club_secretary" /></li>
+            <li>Treasurer: <span tal:replace="view/club_treasurer" /></li>
+            <li>LWHS Advisor: <span tal:replace="view/club_advisor" /></li>
         </ul>
     </div>
     <div class="agreement-file" tal:define="hasFile view/hasFile">
@@ -54,6 +54,13 @@
             <li tal:condition="not:tou"><span tal:replace="string:Membership agreement NOT accepted." /></li>
         </ul>
     </div>
+    <div class="approval_date" tal:condition="context/approval_date|nothing">
+        <h3>Approval Date</h3>
+        <ul>
+            <li><span tal:replace="context/approval_date" /></li>
+        </ul>
+    </div>
+
     </div>
     <div tal:replace="structure provider:plone.belowcontenttitle" />
     <div tal:replace="structure provider:plone.abovecontentbody" />
