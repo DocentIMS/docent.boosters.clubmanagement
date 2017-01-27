@@ -2,33 +2,29 @@
 <object
     i18n:domain="docent.boosters.clubmanagement"
     meta_type="Dexterity FTI"
-    name="booster_clubs_folder"
+    name="attendance_record"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
   <!-- Basic properties -->
   <property
       i18n:translate=""
-      name="title">Booster Clubs Folder</property>
+      name="title">Attendance Record</property>
   <property
       i18n:translate=""
-      name="description">A Folder to manage booster clubs.</property>
+      name="description">Attendance Record</property>
 
   <property name="allow_discussion">False</property>
-  <property name="icon_expr">string:${portal_url}/folder_icon.png</property>
+  <property name="icon_expr">string:${portal_url}/document.png</property>
   <property name="link_target"></property>
 
   <!-- Hierarchy control -->
-  <property name="allowed_content_types">
-    <element value="booster_club" />
-    <element value="attendance_record" />
-  </property>
-  <property name="filter_content_types">True</property>
-  <property name="global_allow">True</property>
+  <property name="allowed_content_types" />
+  <property name="global_allow">False</property>
 
   <!-- Schema, class and security -->
   <property name="add_permission">cmf.AddPortalContent</property>
-  <property name="klass">docent.boosters.clubmanagement.content.booster_clubs_folder.BoosterClubsFolder</property>
-  <property name="schema">docent.boosters.clubmanagement.content.booster_clubs_folder.IBoosterClubsFolder</property>
+  <property name="klass">docent.boosters.clubmanagement.content.attendance_record.AttendanceRecord</property>
+  <property name="schema">docent.boosters.clubmanagement.content.attendance_record.IAttendanceRecord</property>
 
   <!-- Enabled behaviors -->
   <property name="behaviors">
@@ -38,7 +34,7 @@
   </property>
 
   <!-- View information -->
-  <property name="add_view_expr">string:${folder_url}/++add++booster_clubs_folder</property>
+  <property name="add_view_expr">string:${folder_url}/++add++attendance_record</property>
   <property name="immediate_view">view</property>
   <property name="default_view">view</property>
   <property name="default_view_fallback">False</property>

@@ -55,6 +55,11 @@
       />
 
   <utility
+        name="docent.boosters.Active_Clubs"
+        component="docent.boosters.clubmanagement.vocabularies.IActiveBoosterClubVocabularyFactory"
+    />
+
+  <utility
       factory=".setuphandlers.HiddenProfiles"
       name="docent.boosters.clubmanagement-hiddenprofiles" />
 

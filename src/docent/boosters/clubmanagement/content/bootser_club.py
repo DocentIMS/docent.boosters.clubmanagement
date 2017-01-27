@@ -90,6 +90,9 @@ class BoosterClub(Container):
         today = date.today()
         setattr(self, 'approval_date', today)
 
+    def strip_approval_date(self):
+        setattr(self, 'approval_date', None)
+
     def verifyClubOfficers(self):
         """
         Officers cannot hold more than two positions.
