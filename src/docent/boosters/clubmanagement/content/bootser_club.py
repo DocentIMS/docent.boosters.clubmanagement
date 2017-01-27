@@ -2,6 +2,10 @@ from collections import defaultdict, Counter
 from datetime import date
 import logging
 
+from AccessControl import ClassSecurityInfo, getSecurityManager
+from AccessControl.SecurityManagement import newSecurityManager, setSecurityManager
+from AccessControl.User import UnrestrictedUser as BaseUnrestrictedUser
+
 from plone import api
 from plone.api.exc import MissingParameterError
 from plone.dexterity.content import Container
@@ -84,11 +88,56 @@ class BoosterClub(Container):
         """
         all edits should change the workflow state back to pending
         """
-        api.content.transition(obj=self, to_state='pending')
+        #create a temporary security manage
+        sm = getSecurityManager()
+        role = 'Manager'
+        tmp_user = BaseUnrestrictedUser(sm.getUser().getId(), '', [role], '')
+        portal= api.portal.get()
+        tmp_user = tmp_user.__of__(portal.acl_users)
+        newSecurityManager(None, tmp_user)
+
+        try:
+            api.content.transition(obj=self, to_state='pending')
+            self.strip_approval_date()
+            #reset security manager!
+            setSecurityManager(sm)
+        except Exception as e:
+            setSecurityManager(sm)
+            logger.warn("BoosterClub: There was an error %s transitioning to the Pending workflow" % self.absolute_url())
+            logger.warn("BoosterClub: The error was: %s" % e.message)
+            api.portal.show_message(message="There was an error updating your club. Please contact an administrator.",
+                                        request=self.REQUEST,
+                                        type='warn')
+
+
+    def after_transition_editor(self):
+        context_state = api.content.get_state(obj=self)
+        if context_state == 'approved':
+            sm = getSecurityManager()
+            role = 'Manager'
+            tmp_user = BaseUnrestrictedUser(sm.getUser().getId(), '', [role], '')
+            portal= api.portal.get()
+            tmp_user = tmp_user.__of__(portal.acl_users)
+            newSecurityManager(None, tmp_user)
+            try:
+                self.set_approval_date()
+                #reset security manager!
+                setSecurityManager(sm)
+            except Exception as e:
+                setSecurityManager(sm)
+                logger.warn("BoosterClub: There was an error %s transitioning to the Pending workflow" % self.absolute_url())
+                logger.warn("BoosterClub: The error was: %s" % e.message)
+                api.portal.show_message(message="There was an error updating your club. Please contact an administrator.",
+                                            request=self.REQUEST,
+                                            type='warn')
+
 
     def set_approval_date(self):
         today = date.today()
         setattr(self, 'approval_date', today)
+
+    def strip_approval_date(self):
+        setattr(self, 'approval_date', None)
 
     def verifyClubOfficers(self):
         """
