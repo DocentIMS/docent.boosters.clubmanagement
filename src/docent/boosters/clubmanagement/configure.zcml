@@ -49,12 +49,6 @@
       />
 
   <subscriber
-      for="docent.boosters.clubmanagement.content.bootser_club.IBoosterClub
-      Products.DCWorkflow.interfaces.IAfterTransitionEvent"
-      handler=".event_handlers.after_transition_processor"
-      />
-
-  <subscriber
       for="docent.boosters.clubmanagement.content.booster_clubs_folder.IBoosterClubsFolder
       zope.lifecycleevent.interfaces.IObjectCreatedEvent"
       handler=".event_handlers.after_creation_processor"

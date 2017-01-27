@@ -65,7 +65,7 @@ class View(grok.View):
             current_user_data = api.user.get_current()
             current_user_id = current_user_data.getId()
             current_user_groups = api.group.get_groups(user=current_user_data)
-            administrative_role = api.user.has_permission('manageBoosterClubs',
+            administrative_role = api.user.has_permission('Boosters: Manage Clubs',
                                                            user=current_user_data,
                                                            obj=context)
 

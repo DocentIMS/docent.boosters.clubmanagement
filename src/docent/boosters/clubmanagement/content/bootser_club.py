@@ -12,6 +12,7 @@ from plone.dexterity.content import Container
 from plone.directives import form
 from plone.indexer import indexer
 from plone.namedfile.field import NamedBlobFile
+
 from zope import schema
 
 from docent.boosters.clubmanagement import _
@@ -146,12 +147,40 @@ class BoosterClub(Container):
         """
         context = self
         club_officer_list = []
-        club_officer_list.append(context.club_president)
-        club_officer_list.append(context.club_secretary)
-        club_officer_list.append(context.club_treasurer)
-        club_officer_list.append(context.club_advisor)
-        officer_counter = Counter(club_officer_list)
+        missing_officers = []
 
+        club_president = context.club_president
+        if not club_president or club_president == 'no_members':
+            missing_officers.append('President')
+        else:
+            club_officer_list.append(club_president)
+
+        club_secretary = context.club_secretary
+        if not club_secretary or club_secretary == 'no_members':
+            missing_officers.append('Secretary')
+        else:
+            club_officer_list.append(club_secretary)
+
+        club_treasurer = context.club_treasurer
+        if not club_treasurer or club_treasurer == 'no_members':
+            missing_officers.append('Treasurer')
+        else:
+            club_officer_list.append(club_treasurer)
+
+        club_advisor = context.club_advisor
+        if club_advisor and club_advisor != 'no_members':
+            club_officer_list.append(club_advisor)
+
+        if missing_officers:
+            missing_officers_msg = "All officer positions need to be filled by a Booster member. " \
+                                   "The proposal cannot progress until the following positions are " \
+                                   "filled: %s." % ', '.join(missing_officers)
+            api.portal.show_message(message=missing_officers_msg,
+                                    request=context.REQUEST,
+                                    type='warn')
+            return False
+
+        officer_counter = Counter(club_officer_list)
         for member_key in officer_counter.keys():
             if officer_counter[member_key] > 2:
                 try:
@@ -160,12 +189,8 @@ class BoosterClub(Container):
                 except MissingParameterError:
                     fullname = "The member with id: %s" % member_key
 
-                if member_key == 'no_members':
-                    portal_msg = 'There are not enough officers to manage this club. ' \
-                                 'Please assign all officers before this club can be approved.'
-                else:
-                    portal_msg = "%s cannot hold more than two officer positions for this club. The " \
-                                 "club cannot be approved until this is changed." % fullname
+                portal_msg = "%s cannot hold more than two officer positions for this club. The " \
+                             "club cannot be approved until this is changed." % fullname
 
                 api.portal.show_message(message=portal_msg,
                                         request=context.REQUEST,
