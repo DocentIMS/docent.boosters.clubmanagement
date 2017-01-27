@@ -127,7 +127,7 @@ class BoosterProposalForm(form.SchemaForm):
                                            u'please upload the form.</p>' % context.absolute_url()
 
                     setattr(fieldset_group, 'description', fieldset_description)
-                    fieldset_group.upate()
+                    fieldset_group.update()
 
     @button.buttonAndHandler(u"Cancel")
     def handleCancel(self, action):

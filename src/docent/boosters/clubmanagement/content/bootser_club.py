@@ -99,7 +99,6 @@ class BoosterClub(Container):
 
         try:
             api.content.transition(obj=self, to_state='pending')
-            self.strip_approval_date()
             #reset security manager!
             setSecurityManager(sm)
         except Exception as e:
@@ -137,8 +136,6 @@ class BoosterClub(Container):
         today = date.today()
         setattr(self, 'approval_date', today)
 
-    def strip_approval_date(self):
-        setattr(self, 'approval_date', None)
 
     def verifyClubOfficers(self):
         """
