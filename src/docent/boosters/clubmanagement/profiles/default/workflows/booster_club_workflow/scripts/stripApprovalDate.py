@@ -7,5 +7,5 @@
 ##parameters=self
 ##title=Update Approval Date
 ##
-if hasattr(context, 'set_approval_date'):
-    context.set_approval_date()
+if hasattr(context, 'strip_approval_date'):
+    context.strip_approval_date()

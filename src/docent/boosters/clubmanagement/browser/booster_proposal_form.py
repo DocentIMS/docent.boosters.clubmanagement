@@ -42,7 +42,8 @@ class IBoosterProposalForm(form.Schema):
     fieldset('officer_information',
         label=u'Officer Information',
         description=u'Note:  Two board members must have the "Good Practices Training" before the club can be approved. '
-                    u'You may submit your application, and it will be held until this requirement is met.',
+                    u'You may submit your application, and it will be held until this requirement is met. Also, one '
+                    u'person may hold up to two Officer positions."',
         fields=['club_president',
                 'club_secretary',
                 'club_treasurer',]
@@ -113,6 +114,20 @@ class BoosterProposalForm(form.SchemaForm):
     enable_form_tabbing  = False
     # label = u"Booster Club Proposal"
     # template = Zope3PageTemplateFile("templates/booster_proposal_form.pt")
+
+    def update(self):
+        super(BoosterProposalForm, self).update()
+        context = self.context
+        if context.agreement_file:
+            for fieldset_group in self.groups:
+                if fieldset_group.__name__ == 'agreement_upload':
+                    fieldset_description = u'<p>1) We still need the paper form completed and uploaded.  Please ' \
+                                           u'download the <a href="%s/@@download/agreement_file" title="LWHS Booster Club Agreement Form">' \
+                                           u'Agreement</a>.</p><p>2) Once completed, ' \
+                                           u'please upload the form.</p>' % context.absolute_url()
+
+                    setattr(fieldset_group, 'description', fieldset_description)
+                    fieldset_group.update()
 
     @button.buttonAndHandler(u"Cancel")
     def handleCancel(self, action):

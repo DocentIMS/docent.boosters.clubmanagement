@@ -3,12 +3,14 @@ import logging
 from plone import api
 from plone.dexterity.content import Container
 from plone.directives import form
+from plone.namedfile.field import NamedBlobFile
 from plone.schema import Email
 
 from docent.group.vocabularies.vocabularies import BOOSTER_BOARD_MEMBERS_GROUP_ID
 from docent.boosters.clubmanagement import _
 
 logger = logging.getLogger("Plone")
+
 
 class IBoosterClubsFolder(form.Schema):
     """
@@ -20,6 +22,13 @@ class IBoosterClubsFolder(form.Schema):
         description=_(u"Email address of the Executive Secretary"),
         required=False,
     )
+
+    agreement_file = NamedBlobFile(
+        title=_(u"Agreement File"),
+        description=_(u"This file is to be downloaded by club for the approval process."),
+        required=False,
+    )
+
 
 class BoosterClubsFolder(Container):
     """
