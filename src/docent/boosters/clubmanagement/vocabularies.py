@@ -38,8 +38,15 @@ class IActiveBoosterClubVocabulary(object):
                                      review_state='active',
                                      sort_on='getObjPositionInParent')
 
+        approved_club_brains = catalog(path={'query': pc_path, 'depth': 1},
+                                     object_provides=IBoosterClub.__identifier__,
+                                     review_state='approved',
+                                     sort_on='getObjPositionInParent')
         terms = []
-        if active_club_brains:
+
+        expected_clubs = active_club_brains + approved_club_brains
+
+        if expected_clubs:
             for active_club in active_club_brains:
                 club_uid = active_club.UID
                 club_title = active_club.Title

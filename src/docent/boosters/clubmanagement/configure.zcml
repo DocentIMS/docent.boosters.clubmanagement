@@ -53,6 +53,12 @@
       handler=".event_handlers.after_creation_processor"
       />
 
+  <subscriber
+      for="docent.boosters.clubmanagement.content.booster_clubs_folder.IBoosterClubsFolder
+      zope.lifecycleevent.interfaces.IObjectAddedEvent"
+      handler=".event_handlers.after_creation_processor"
+      />
+
   <utility
         name="docent.boosters.Active_Clubs"
         component="docent.boosters.clubmanagement.vocabularies.IActiveBoosterClubVocabularyFactory"

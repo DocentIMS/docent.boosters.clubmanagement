@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="docent.boosters.clubmanagement">
+<head>
+<metal:block fill-slot="style_slot">
+        <link rel="stylesheet" type="text/css"
+            tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+            tal:attributes="href string:${navroot}/++resource++docent.boosters.clubmanagement/boosterclubs.css"
+            />
+</metal:block>
+</head>
+<body>
+
+<metal:main fill-slot="main">
+    <tal:main-macro metal:define-macro="main">
+
+    <div tal:replace="structure provider:plone.abovecontenttitle" />
+    <h1 tal:content="context/Title">TITLE</h1>
+    <div tal:replace="structure provider:plone.belowcontenttitle" />
+    <div tal:replace="structure provider:plone.abovecontentbody" />
+    <tal:recordblock tal:define="present view/clubs_present_brains;
+                                 absent view/clubs_absent_brains;
+                                 officers_emailed_string view/club_officers_emailed_string;
+                                 missing_data view/missing_member_data_string">
+    <h3>Attending Clubs</h3>
+        <p>The following clubs attended the meeting:</p>
+        <ul>
+            <li tal:repeat="p_club present"><a href="p_club/getURL" title="p_club/Title"><span tal:replace="p_club/Title"/></a></li>
+        </ul>
+    <h3>Absent Clubs</h3>
+        <p>The following clubs were absent:</p>
+        <ul>
+            <li tal:repeat="a_club absent"><a href="a_club/getURL" title="a_club/Title"><span tal:replace="a_club/Title"/></a></li>
+        </ul>
+    <h4>Members Notified</h4>
+        <p>The following absent club members were notified:</p>
+        <p tal:content="officers_emailed_string"></p>
+    <h4 tal:condition="missing_data">Missing Members Data</h4>
+        <p tal:condition="missing_data">There were errors sending emails to the following accounts:</p>
+        <p tal:condition="missing_data" tal:content="missing_data"></p>
+    </tal:recordblock>
+
+    <div tal:replace="structure provider:plone.belowcontentbody" />
+    </tal:main-macro>
+</metal:main>
+
+</body>
+</html>
