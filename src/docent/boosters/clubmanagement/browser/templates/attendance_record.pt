@@ -25,11 +25,12 @@
     <tal:recordblock tal:define="present view/clubs_present_brains;
                                  absent view/clubs_absent_brains;
                                  officers_emailed_string view/club_officers_emailed_string;
-                                 missing_data view/missing_member_data_string">
+                                 missing_data view/missing_member_data_string;
+                                 summary_html view/description_html">
     <div class="attendance_details">
     <h2>Meeting Summary</h2>
-        <p tal:condition="context/description" tal:content="context/description"></p>
-        <p tal:condition="not:context/description">There is no summary for this meeting.</p>
+        <p tal:condition="summary_html" tal:replace="structure summary_html"></p>
+        <p tal:condition="not:summary_html">There is no summary for this meeting.</p>
 
     <h3>Attending Clubs</h3>
         <p>The following clubs attended the meeting:</p>

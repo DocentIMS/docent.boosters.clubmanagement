@@ -165,7 +165,7 @@ class AttendanceRecord(Item):
             if email_errors:
                 error_msg = "The following Members had errors while sending their absence notice. Please ask an " \
                             "administrator to check the logs for details.\n\n"
-                
+
                 members_with_errors = []
                 [members_with_errors.append(error_tuple[1]) for error_tuple in email_errors]
                 error_msg += ", ".join(members_with_errors)

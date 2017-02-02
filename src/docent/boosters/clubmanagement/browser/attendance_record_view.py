@@ -2,7 +2,7 @@ import logging
 from five import grok
 
 from plone.app.uuid.utils import uuidToCatalogBrain
-
+from plone import api
 from docent.boosters.clubmanagement.content.attendance_record import IAttendanceRecord
 
 grok.templatedir('templates')
@@ -42,4 +42,14 @@ class View(grok.View):
         else:
             self.missing_member_data_string = ''
 
+        description_text = getattr(context, 'description', u'')
+        if description_text:
+            portal_transforms = api.portal.get_tool(name='portal_transforms')
+            description_data = portal_transforms.convertTo('text/html',
+                                               description_text,
+                                               mimetype='text/-x-web-intelligent')
+
+            self.description_html = description_data.getData()
+        else:
+           self.description_html = description_text
 
