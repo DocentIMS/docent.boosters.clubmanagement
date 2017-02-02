@@ -149,7 +149,7 @@ class AttendanceRecord(Item):
             for m_tuple in email_recipients_set:
                 m_email_address, m_fullname, m_id = m_tuple
                 club_officers_emailed.append(m_tuple)
-                msg = "Hi %s,\n\n" % fullname
+                msg = "Hi %s,\n\n" % m_fullname
                 msg += absence_notice_text
                 try:
                     api.portal.send_email(sender=booster_secretary_email,
