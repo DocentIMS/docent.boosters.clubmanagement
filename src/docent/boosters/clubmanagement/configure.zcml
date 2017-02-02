@@ -54,9 +54,9 @@
       />
 
   <subscriber
-      for="docent.boosters.clubmanagement.content.booster_clubs_folder.IBoosterClubsFolder
+      for="docent.boosters.clubmanagement.content.attendance_record.IAttendanceRecord
       zope.lifecycleevent.interfaces.IObjectAddedEvent"
-      handler=".event_handlers.after_creation_processor"
+      handler=".event_handlers.after_object_added_processor"
       />
 
   <utility

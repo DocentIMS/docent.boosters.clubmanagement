@@ -24,6 +24,8 @@
     <div tal:replace="structure provider:plone.abovecontentbody" />
     <p>These boosters have been approved by the LWHS Booster Executive Boosters. If your group is not listed here, it has not been approved.</p>
     <p tal:condition="view/showProposalLink"><a href="" tal:attributes="href string: ${context/absolute_url}/@@booster-club-proposal">Propose New Booster Club</a></p>
+    <p tal:condition="view/adminisrative_role"><a href="" tal:attributes="href string: ${context/absolute_url}/++add++attendance_record">Add Attendance Record</a></p>
+
     <p>If you have a question contact the <a href="#" tal:attributes="href string:mailto:${context/executive_secretary_email}&subject=LWHS%20Boosters%20Club%20Question">Executive Secretary</a>.</p>
     <div class="pat-autotoc autotabs" data-pat-autotoc="section:section;levels:h2;">
     <tal:clubSections tal:define="isAnon view/isAnon;
@@ -34,7 +36,8 @@
                                   show_active python:view.showOrHideTabs(active_clubs);
                                   show_approved python:view.showOrHideTabs(approved_clubs);
                                   show_pending python:view.showOrHideTabs(pending_clubs);
-                                  show_submitted python:view.showOrHideTabs(submitted_clubs);">
+                                  show_submitted python:view.showOrHideTabs(submitted_clubs);
+                                  attendance_record_brains view/attendance_record_brains;">
     <section>
         <h2>Active</h2>
         <table>
@@ -107,6 +110,16 @@
                 <td tal:content="python:view.getOwnerName(submitted_club)"></td>
             </tr>
         </table>
+    </section>
+    <section tal:condition="attendance_record_brains" id="attendance_records">
+        <h2>Attendance Records</h2>
+        <ul>
+            <li tal:repeat="attendance_record attendance_record_brains">
+                <a href="#" title="#"
+                        tal:attributes="href attendance_record/getURL;
+                                        title attendance_record/Title">
+                    <span tal:replace="attendance_record/Title" /></a></li>
+        </ul>
     </section>
     </tal:clubSections>
     </div>

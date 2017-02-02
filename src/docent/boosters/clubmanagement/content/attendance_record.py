@@ -41,7 +41,7 @@ class IAttendanceRecord(form.Schema):
     )
 
     description = schema.Text(
-        title=_(u"Description"),
+        title=_(u"Summary"),
         description=_(u"A summary of the meeting."),
         required=False,
     )
@@ -65,7 +65,7 @@ class IAttendanceRecord(form.Schema):
     club_officers_emailed = schema.List(
         title=_(u'Club Officers Emailed'),
         description=_(u"Email address of club members emailed."),
-        value_type=schema.ASCIILine(),
+        value_type=schema.TextLine(),
         required=False,
     )
 
@@ -83,12 +83,12 @@ class AttendanceRecord(Item):
     Baseclass for AttendanceRecord based on Container
     """
 
-    def process_record(self, context, newParent):
+    def after_object_added_processor(self, context, event):
         """
         Assemble a list of booster clubs that did not attend the meeting
         :return:
         """
-        import pdb;pdb.set_trace()
+        parent_container = event.newParent
         pc_path = '/'.join(parent_container.getPhysicalPath())
         catalog = getToolByName(parent_container, 'portal_catalog')
         active_club_brains = catalog(path={'query': pc_path, 'depth': 1},
@@ -134,7 +134,7 @@ class AttendanceRecord(Item):
 
                     email_address = officer_member_data.getProperty('email')
                     fullname = officer_member_data.getProperty('fullname')
-                    member_tuple = (email_address, fullname)
+                    member_tuple = (email_address, fullname, officer_member_id)
                     email_recipients.append(member_tuple)
 
         if missing_members:
@@ -145,9 +145,10 @@ class AttendanceRecord(Item):
             email_errors = []
             absence_notice_text = getattr(parent_container, 'absence_notice', '')
             booster_secretary_email = getattr(parent_container, 'executive_secretary_email', '')
-            for m_tuple in email_recipients:
-                m_email_address, m_fullname = m_tuple
-                club_officers_emailed.append(m_email_address)
+            email_recipients_set = set(email_recipients)
+            for m_tuple in email_recipients_set:
+                m_email_address, m_fullname, m_id = m_tuple
+                club_officers_emailed.append(m_tuple)
                 msg = "Hi %s,\n\n" % fullname
                 msg += absence_notice_text
                 try:
@@ -156,18 +157,24 @@ class AttendanceRecord(Item):
                                           subject="Booster Club Meeting Absence",
                                           body=msg,
                                           immediate=True,)
-                except ValueError:
-                    email_errors.append(m_email_address)
+                except Exception as e:
+                    logger.warn("ATTENDANCE RECORD: An error occurred when sending email "
+                                "to: %s, the error was: %s" % (m_email_address, e.message))
+                    email_errors.append(m_tuple)
 
             if email_errors:
-                error_msg = "The following email addresses had errors while sending their absence notice:\n\n"
-                error_msg += ", ".join(email_errors)
+                error_msg = "The following Members had errors while sending their absence notice. Please ask an" \
+                            "administrator to check the logs for details.\n\n"
+                for error_tuple in email_errors:
+                    error_msg += ", ".join(error_tuple[1])
 
                 api.portal.show_message(message=error_msg,
                                         request=context.REQUEST,
                                         type='warn')
 
-            final_emails_sent = set(club_officers_emailed) - set(email_errors)
+            set_of_member_tuples_sent = set(club_officers_emailed) - set(email_errors)
+            final_emails_sent = set()
+            [final_emails_sent.add(mts_tuple[1]) for mts_tuple in set_of_member_tuples_sent]
             setattr(context, 'club_officers_emailed', list(final_emails_sent))
 
             api.portal.show_message(message="%s emails were sent to absent members." % len(final_emails_sent),

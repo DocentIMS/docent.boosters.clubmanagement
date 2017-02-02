@@ -5,6 +5,7 @@ from Products.CMFCore.utils import getToolByName
 
 from docent.boosters.clubmanagement.content.booster_clubs_folder import IBoosterClubsFolder
 from docent.boosters.clubmanagement.content.bootser_club import IBoosterClub
+from docent.boosters.clubmanagement.content.attendance_record import IAttendanceRecord
 
 logger = logging.getLogger("Plone")
 
@@ -53,6 +54,10 @@ class View(grok.View):
         pending_club_objs = []
         [pending_club_objs.append(pending_brain.getObject()) for pending_brain in pending_club_brains]
 
+        attendance_record_brains = catalog(path={'query': context_path, 'depth': 1},
+                                     object_provides=IAttendanceRecord.__identifier__,
+                                     sort_on='getObjPositionInParent')
+
         all_objs = active_club_objs + approved_club_objs + pending_club_objs + submitted_club_objs
 
         isAnon = api.user.is_anonymous()
@@ -82,6 +87,8 @@ class View(grok.View):
 
         self.adminisrative_role = administrative_role
         self.showProposalLink = False
+
+        self.attendance_record_brains = attendance_record_brains
 
         if not administrative_role and isBoosterMember:
             self.showProposalLink = True

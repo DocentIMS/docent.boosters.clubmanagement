@@ -26,22 +26,32 @@
                                  absent view/clubs_absent_brains;
                                  officers_emailed_string view/club_officers_emailed_string;
                                  missing_data view/missing_member_data_string">
+    <div class="attendance_details">
+    <h2>Meeting Summary</h2>
+        <p tal:condition="context/description" tal:content="context/description"></p>
+        <p tal:condition="not:context/description">There is no summary for this meeting.</p>
+
     <h3>Attending Clubs</h3>
         <p>The following clubs attended the meeting:</p>
         <ul>
-            <li tal:repeat="p_club present"><a href="p_club/getURL" title="p_club/Title"><span tal:replace="p_club/Title"/></a></li>
+            <li tal:repeat="p_club present"><a href="#" title="#"
+                    tal:attributes="href p_club/getURL; title p_club/Title"><span tal:replace="p_club/Title"/></a> -
+                                                                            <em><span tal:replace="python:p_club.review_state.title()"/></em></li>
         </ul>
     <h3>Absent Clubs</h3>
         <p>The following clubs were absent:</p>
         <ul>
-            <li tal:repeat="a_club absent"><a href="a_club/getURL" title="a_club/Title"><span tal:replace="a_club/Title"/></a></li>
+            <li tal:repeat="a_club absent"><a href="#" title="#"
+                    tal:attributes="href a_club/getURL; title a_club/Title"><span tal:replace="a_club/Title"/></a> -
+                                                                            <em><span tal:replace="python:a_club.review_state.title()"/></em></li>
         </ul>
     <h4>Members Notified</h4>
-        <p>The following absent club members were notified:</p>
+        <p>The following club members were notified of their absence:</p>
         <p tal:content="officers_emailed_string"></p>
     <h4 tal:condition="missing_data">Missing Members Data</h4>
-        <p tal:condition="missing_data">There were errors sending emails to the following accounts:</p>
+        <p tal:condition="missing_data">There were errors locating accounts for the following members. Please have an administrator check the logs for further details.</p>
         <p tal:condition="missing_data" tal:content="missing_data"></p>
+    </div>
     </tal:recordblock>
 
     <div tal:replace="structure provider:plone.belowcontentbody" />

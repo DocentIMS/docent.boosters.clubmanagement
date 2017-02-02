@@ -47,9 +47,9 @@ class IActiveBoosterClubVocabulary(object):
         expected_clubs = active_club_brains + approved_club_brains
 
         if expected_clubs:
-            for active_club in active_club_brains:
-                club_uid = active_club.UID
-                club_title = active_club.Title
+            for expected_club in expected_clubs:
+                club_uid = expected_club.UID
+                club_title = expected_club.Title
                 terms.append(SimpleVocabulary.createTerm(club_uid, str(club_uid), club_title))
         else:
             terms.append(SimpleVocabulary.createTerm('no_clubs', 'no_clubs', 'No Active Clubs'))
