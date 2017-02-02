@@ -163,10 +163,12 @@ class AttendanceRecord(Item):
                     email_errors.append(m_tuple)
 
             if email_errors:
-                error_msg = "The following Members had errors while sending their absence notice. Please ask an" \
+                error_msg = "The following Members had errors while sending their absence notice. Please ask an " \
                             "administrator to check the logs for details.\n\n"
-                for error_tuple in email_errors:
-                    error_msg += ", ".join(error_tuple[1])
+                
+                members_with_errors = []
+                [members_with_errors.append(error_tuple[1]) for error_tuple in email_errors]
+                error_msg += ", ".join(members_with_errors)
 
                 api.portal.show_message(message=error_msg,
                                         request=context.REQUEST,
