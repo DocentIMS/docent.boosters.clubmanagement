@@ -47,7 +47,7 @@
                                                                             <em><span tal:replace="python:a_club.review_state.title()"/></em></li>
         </ul>
     <h4>Members Notified</h4>
-        <p>The following club members were notified of their absence:</p>
+        <p>The following club members were notified via email of their absence:</p>
         <p tal:content="officers_emailed_string"></p>
     <h4 tal:condition="missing_data">Missing Members Data</h4>
         <p tal:condition="missing_data">There were errors locating accounts for the following members. Please have an administrator check the logs for further details.</p>

@@ -113,6 +113,8 @@
     </section>
     <section tal:condition="attendance_record_brains" id="attendance_records">
         <h2>Attendance Records</h2>
+        <p>These are the attendance records for booster clubs' monthly meeting.</p>
+        <p>Emails are automatically sent to all board members of clubs that do not send one representative."</p>
         <ul>
             <li tal:repeat="attendance_record attendance_record_brains">
                 <a href="#" title="#"
