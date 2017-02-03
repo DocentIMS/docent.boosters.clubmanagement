@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<dc-workflow workflow_id="booster_club_workflow" title="Booster Club Workflow" description=" - Booster Club Workflow is based on simple publication workflow. States remain private save for the active workflow which is public." state_variable="review_state"         initial_state="submitted" manager_bypass="False" >
+<dc-workflow workflow_id="booster_club_workflow" title="Booster Club Workflow" description=" - Booster Club Workflow is based on simple publication workflow. States remain private save for the active workflow which is public." state_variable="review_state"         initial_state="pending" manager_bypass="False" >
  
  <permission>Access contents information</permission>
  <permission>Change portal events</permission>
@@ -7,6 +7,7 @@
  <permission>View</permission>
  <state state_id="active" title="Active" >
   <description>Public.</description>
+  <exit-transition transition_id="archive" />
   <exit-transition transition_id="return" />
   <permission-map name="Access contents information" acquired="False">
    <permission-role>Anonymous</permission-role>
@@ -71,9 +72,41 @@
   
   
  </state>
- <state state_id="pending" title="Pending" >
-  <description>Waiting to be reviewed, not editable by the owner.</description>
-  <exit-transition transition_id="approve" />
+ <state state_id="archived" title="Archived" >
+  <exit-transition transition_id="submit" />
+  <permission-map name="Access contents information" acquired="False">
+   <permission-role>Contributor</permission-role>
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Reader</permission-role>
+   <permission-role>Reviewer</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="Change portal events" acquired="False">
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="Modify portal content" acquired="False">
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Reviewer</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  <permission-map name="View" acquired="False">
+   <permission-role>Contributor</permission-role>
+   <permission-role>Editor</permission-role>
+   <permission-role>Manager</permission-role>
+   <permission-role>Reader</permission-role>
+   <permission-role>Reviewer</permission-role>
+   <permission-role>Site Administrator</permission-role>
+  </permission-map>
+  
+  
+ </state>
+ <state state_id="draft" title="Draft" >
+  <exit-transition transition_id="submit" />
   <permission-map name="Access contents information" acquired="False">
    <permission-role>Contributor</permission-role>
    <permission-role>Editor</permission-role>
@@ -109,10 +142,11 @@
   
   
  </state>
- <state state_id="submitted" title="Submitted" >
-  <description>Initial Booster Club State.  If all values accounted for, auto transition to Pending</description>
-  <exit-transition transition_id="make_pending" />
-  <exit-transition transition_id="manual_make_pending" />
+ <state state_id="pending" title="Pending" >
+  <description>Waiting to be reviewed, not editable by the owner.</description>
+  <exit-transition transition_id="approve" />
+  <exit-transition transition_id="archive" />
+  <exit-transition transition_id="reject" />
   <permission-map name="Access contents information" acquired="False">
    <permission-role>Contributor</permission-role>
    <permission-role>Editor</permission-role>
@@ -167,9 +201,11 @@
   </guard>
   
  </transition>
- <transition transition_id="make_pending" title="Make Pending" new_state="pending" trigger="AUTOMATIC" before_script="" after_script="" >
-  <action url="%(content_url)s/content_status_modify?workflow_action=make_pending" category="workflow" icon="">Make Pending</action>
+ <transition transition_id="archive" title="Archive" new_state="archived" trigger="USER" before_script="" after_script="" >
+  <description>Send no longer active club to archive.</description>
+  <action url="%(content_url)s/content_status_modify?workflow_action=archive" category="workflow" icon="">Archive</action>
   <guard >
+   <guard-permission>Boosters: Manage Clubs</guard-permission>
   </guard>
   
  </transition>
@@ -182,8 +218,9 @@
   </guard>
   
  </transition>
- <transition transition_id="manual_make_pending" title="Make Pending (Manual)" new_state="pending" trigger="USER" before_script="" after_script="" >
-  <action url="%(content_url)s/content_status_modify?workflow_action=make_pending_manual" category="workflow" icon="">Make Pending (Manual)</action>
+ <transition transition_id="reject" title="Reject" new_state="draft" trigger="USER" before_script="" after_script="" >
+  <description>Send to draft state due to errors.</description>
+  <action url="%(content_url)s/content_status_modify?workflow_action=reject" category="workflow" icon="">Reject</action>
   <guard >
    <guard-permission>Boosters: Manage Clubs</guard-permission>
   </guard>
@@ -193,6 +230,15 @@
   <action url="%(content_url)s/content_status_modify?workflow_action=return" category="workflow" icon="">Return</action>
   <guard >
    <guard-permission>Boosters: Manage Clubs</guard-permission>
+  </guard>
+  
+ </transition>
+ <transition transition_id="submit" title="Submit" new_state="pending" trigger="USER" before_script="" after_script="" >
+  <description>Transition draft or archived states to pending.</description>
+  <action url="%(content_url)s/content_status_modify?workflow_action=submit" category="workflow" icon="">Submit</action>
+  <guard >
+   <guard-expression>here/verifyClubOfficers</guard-expression
+   >
   </guard>
   
  </transition>

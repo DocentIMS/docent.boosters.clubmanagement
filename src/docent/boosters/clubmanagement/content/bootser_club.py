@@ -168,6 +168,7 @@ class BoosterClub(Container):
         if club_advisor and club_advisor != 'no_members':
             club_officer_list.append(club_advisor)
 
+        flag_errors = False
         if missing_officers:
             missing_officers_msg = "All officer positions need to be filled by a Booster member. " \
                                    "The proposal cannot progress until the following positions are " \
@@ -175,7 +176,7 @@ class BoosterClub(Container):
             api.portal.show_message(message=missing_officers_msg,
                                     request=context.REQUEST,
                                     type='warn')
-            return False
+            flag_errors = True
 
         officer_counter = Counter(club_officer_list)
         for member_key in officer_counter.keys():
@@ -192,7 +193,25 @@ class BoosterClub(Container):
                 api.portal.show_message(message=portal_msg,
                                         request=context.REQUEST,
                                         type='warn')
-                return False
+                flag_errors = True
+
+        if club_president == club_secretary:
+            try:
+                officer = api.user.get(username=club_president)
+                fullname = officer.getProperty('fullname')
+            except MissingParameterError:
+                fullname = "The member with id: %s" % member_key
+
+            portal_msg = "%s cannot hold both the President and Secretary positions. The club cannot be approved " \
+                         "until this is changed." % fullname
+
+            api.portal.show_message(message=portal_msg,
+                                    request=context.REQUEST,
+                                    type='warn')
+            flag_errors = True
+
+        if flag_errors:
+            return False
 
         return True
 
