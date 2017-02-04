@@ -31,12 +31,14 @@
     <tal:clubSections tal:define="isAnon view/isAnon;
                                   active_clubs view/active_club_objs;
                                   approved_clubs view/approved_club_objs;
-                                  submitted_clubs view/submitted_club_objs;
+                                  draft_clubs view/draft_club_objs;
                                   pending_clubs view/pending_club_objs;
+                                  archived_clubs view/archived_club_objs;
                                   show_active python:view.showOrHideTabs(active_clubs);
                                   show_approved python:view.showOrHideTabs(approved_clubs);
                                   show_pending python:view.showOrHideTabs(pending_clubs);
-                                  show_submitted python:view.showOrHideTabs(submitted_clubs);
+                                  show_draft python:view.showOrHideTabs(draft_clubs);
+                                  show_archived python:view.showOrHideTabs(archived_clubs);
                                   attendance_record_brains view/attendance_record_brains;">
     <section>
         <h2>Active</h2>
@@ -93,8 +95,8 @@
             </tr>
         </table>
     </section>
-    <section tal:condition="show_submitted">
-        <h2>Submitted</h2>
+    <section tal:condition="show_draft">
+        <h2>Draft</h2>
         <table>
             <tr>
                 <th>Club Name</th>
@@ -102,12 +104,30 @@
                 <th>Date Approved</th>
                 <th>Submitted By</th>
             </tr>
-            <tr tal:repeat="submitted_club submitted_clubs"
-                tal:attributes="class repeat/submitted_club/parity">
-                <td><a href="#" tal:attributes="href submitted_club/absolute_url"><span tal:replace="submitted_club/Title" /></a></td>
-                <td tal:content="submitted_club/booster_organization|nothing"></td>
-                <td tal:content="submitted_club/approval_date|nothing"></td>
-                <td tal:content="python:view.getOwnerName(submitted_club)"></td>
+            <tr tal:repeat="draft_club draft_clubs"
+                tal:attributes="class repeat/draft_club/parity">
+                <td><a href="#" tal:attributes="href draft_club/absolute_url"><span tal:replace="draft_club/Title" /></a></td>
+                <td tal:content="draft_club/booster_organization|nothing"></td>
+                <td tal:content="draft_club/approval_date|nothing"></td>
+                <td tal:content="python:view.getOwnerName(draft_club)"></td>
+            </tr>
+        </table>
+    </section>
+    <section tal:condition="show_archived">
+        <h2>Archived</h2>
+        <table>
+            <tr>
+                <th>Club Name</th>
+                <th>LWHS Activity</th>
+                <th>Date Approved</th>
+                <th>Submitted By</th>
+            </tr>
+            <tr tal:repeat="archived_club archived_clubs"
+                tal:attributes="class repeat/archived_club/parity">
+                <td><a href="#" tal:attributes="href archived_club/absolute_url"><span tal:replace="archived_club/Title" /></a></td>
+                <td tal:content="archived_club/booster_organization|nothing"></td>
+                <td tal:content="archived_club/approval_date|nothing"></td>
+                <td tal:content="python:view.getOwnerName(archived_club)"></td>
             </tr>
         </table>
     </section>

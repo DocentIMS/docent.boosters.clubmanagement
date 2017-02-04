@@ -38,13 +38,13 @@ class View(grok.View):
         approved_club_objs = []
         [approved_club_objs.append(approved_brain.getObject()) for approved_brain in approved_club_brains]
 
-        submitted_club_brains = catalog(path={'query': context_path, 'depth': 1},
+        draft_club_brains = catalog(path={'query': context_path, 'depth': 1},
                                         object_provides=IBoosterClub.__identifier__,
                                         review_state='submitted',
                                         sort_on='getObjPositionInParent')
 
-        submitted_club_objs = []
-        [submitted_club_objs.append(submitted_brain.getObject()) for submitted_brain in submitted_club_brains]
+        draft_club_objs = []
+        [draft_club_objs.append(draft_brain.getObject()) for draft_brain in draft_club_brains]
 
         pending_club_brains = catalog(path={'query': context_path, 'depth': 1},
                                       object_provides=IBoosterClub.__identifier__,
@@ -54,11 +54,21 @@ class View(grok.View):
         pending_club_objs = []
         [pending_club_objs.append(pending_brain.getObject()) for pending_brain in pending_club_brains]
 
+        archived_club_brains = catalog(path={'query': context_path, 'depth': 1},
+                                      object_provides=IBoosterClub.__identifier__,
+                                      review_state='archived',
+                                      sort_on='getObjPositionInParent')
+
+        archived_club_objs = []
+        [archived_club_objs.append(archived_brain.getObject()) for archived_brain in archived_club_brains]
+
         attendance_record_brains = catalog(path={'query': context_path, 'depth': 1},
                                      object_provides=IAttendanceRecord.__identifier__,
                                      sort_on='getObjPositionInParent')
 
-        all_objs = active_club_objs + approved_club_objs + pending_club_objs + submitted_club_objs
+
+
+        all_objs = active_club_objs + approved_club_objs + pending_club_objs + draft_club_objs + archived_club_objs
 
         isAnon = api.user.is_anonymous()
         self.isAnon = isAnon
@@ -82,8 +92,9 @@ class View(grok.View):
 
         self.active_club_objs = active_club_objs
         self.approved_club_objs = approved_club_objs
-        self.submitted_club_objs = submitted_club_objs
+        self.draft_club_objs = draft_club_objs
         self.pending_club_objs = pending_club_objs
+        self.archived_club_objs = archived_club_objs
 
         self.adminisrative_role = administrative_role
         self.showProposalLink = False
