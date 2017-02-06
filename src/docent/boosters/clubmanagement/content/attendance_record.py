@@ -29,6 +29,7 @@ def computeTitle():
 
     return u'%s' % date_str
 
+
 class IAttendanceRecord(form.Schema):
     """
     Uses IDublinCore

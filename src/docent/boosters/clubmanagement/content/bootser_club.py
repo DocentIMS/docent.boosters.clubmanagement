@@ -1,11 +1,13 @@
 from collections import defaultdict, Counter
-from datetime import date
+from datetime import datetime, date
 import logging
 
 from AccessControl import ClassSecurityInfo, getSecurityManager
 from AccessControl.SecurityManagement import newSecurityManager, setSecurityManager
 from AccessControl.User import UnrestrictedUser as BaseUnrestrictedUser
 
+from DateTime import DateTime
+import math
 from plone import api
 from plone.api.exc import MissingParameterError
 from plone.dexterity.content import Container
@@ -13,6 +15,7 @@ from plone.directives import form
 from plone.indexer import indexer
 from plone.namedfile.field import NamedBlobFile
 
+from Products.CMFCore.utils import getToolByName
 from zope import schema
 
 from docent.boosters.clubmanagement import _
@@ -84,6 +87,7 @@ class BoosterClub(Container):
     """
     Baseclass for BoosterClub based on Container
     """
+    security = ClassSecurityInfo()
 
     def after_edit_processor(self):
         """
@@ -198,9 +202,12 @@ class BoosterClub(Container):
         if club_president == club_secretary:
             try:
                 officer = api.user.get(username=club_president)
-                fullname = officer.getProperty('fullname')
+                if officer:
+                    fullname = officer.getProperty('fullname')
+                else:
+                    fullname = "The member with id: %s" % club_president
             except MissingParameterError:
-                fullname = "The member with id: %s" % member_key
+                fullname = "The member with id: %s" % club_president
 
             portal_msg = "%s cannot hold both the President and Secretary positions. The club cannot be approved " \
                          "until this is changed." % fullname
@@ -242,3 +249,46 @@ class BoosterClub(Container):
                                         request=context.REQUEST,
                                         type='warn')
         return False
+
+    security.declarePublic('attendanceRecord')
+    def attendanceRecord(self):
+        context = self
+        approval_date = getattr(context, 'approval_date', None)
+        if not approval_date:
+            return ''
+        approval_datetime = datetime.combine(approval_date, datetime.min.time())
+        approval_DateTime = DateTime(approval_datetime)
+
+        parent_container = self.aq_parent
+        context_path = '/'.join(parent_container.getPhysicalPath())
+
+        catalog = getToolByName(context, 'portal_catalog')
+        from docent.boosters.clubmanagement.content.attendance_record import IAttendanceRecord
+        attendance_record_brains = catalog.unrestrictedSearchResults(path={'query': context_path, 'depth': 1},
+                                     object_provides=IAttendanceRecord.__identifier__,
+                                     sort_on='getObjPositionInParent')
+
+        if not attendance_record_brains:
+            return 'No Records Found'
+
+        attendance_records_since_club_approval = []
+        for a_r in attendance_record_brains:
+            if approval_DateTime <= a_r.created:
+                attendance_records_since_club_approval.append(a_r)
+
+        if not attendance_records_since_club_approval:
+            return '0%'
+
+        context_uid = context.UID()
+        meetings_since_creation = len(attendance_records_since_club_approval)
+
+        attended = 0
+        for attendance_record in attendance_records_since_club_approval:
+            clubs_present = attendance_record.clubs_present
+            if not clubs_present:
+                continue
+            if context_uid in clubs_present:
+                attended += 1
+
+        percentage_attended = math.ceil(100 * float(attended)/float(meetings_since_creation))
+        return '%s%%' % int(percentage_attended)

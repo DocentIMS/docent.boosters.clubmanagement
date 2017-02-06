@@ -45,6 +45,7 @@
         <table>
             <tr>
                 <th>Club Name</th>
+                <th>Attendance</th>
                 <th>LWHS Activity</th>
                 <th>Date Approved</th>
                 <th tal:condition="not:isAnon">Submitted By</th>
@@ -53,6 +54,7 @@
                 tal:attributes="class repeat/active_club/parity">
                 <td tal:condition="not:isAnon"><a href="#" tal:attributes="href active_club/absolute_url"><span tal:replace="active_club/Title" /></a></td>
                 <td tal:condition="isAnon"><span tal:replace="active_club/Title" /></td>
+                <td tal:content="active_club/attendanceRecord"></td>
                 <td tal:content="active_club/booster_organization|nothing"></td>
                 <td tal:content="active_club/approval_date|nothing"></td>
                 <td tal:condition="not:isAnon" tal:content="python:view.getOwnerName(active_club)"></td>
@@ -64,6 +66,7 @@
         <table>
             <tr>
                 <th>Club Name</th>
+                <th>Attendance</th>
                 <th>LWHS Activity</th>
                 <th>Date Approved</th>
                 <th>Submitted By</th>
@@ -71,6 +74,7 @@
             <tr tal:repeat="approved_club approved_clubs"
                 tal:attributes="class repeat/approved_club/parity">
                 <td><a href="#" tal:attributes="href approved_club/absolute_url"><span tal:replace="approved_club/Title" /></a></td>
+                <td tal:content="approved_club/attendanceRecord"></td>
                 <td tal:content="approved_club/booster_organization|nothing"></td>
                 <td tal:content="approved_club/approval_date|nothing"></td>
                 <td tal:content="python:view.getOwnerName(approved_club)"></td>

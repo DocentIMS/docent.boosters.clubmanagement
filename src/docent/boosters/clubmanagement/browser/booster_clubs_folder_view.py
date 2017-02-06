@@ -40,7 +40,7 @@ class View(grok.View):
 
         draft_club_brains = catalog(path={'query': context_path, 'depth': 1},
                                         object_provides=IBoosterClub.__identifier__,
-                                        review_state='submitted',
+                                        review_state='draft',
                                         sort_on='getObjPositionInParent')
 
         draft_club_objs = []

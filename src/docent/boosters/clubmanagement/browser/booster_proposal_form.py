@@ -12,6 +12,7 @@ from plone.supermodel.directives import fieldset
 from plone.namedfile.field import NamedBlobFile
 from Products.statusmessages.interfaces import IStatusMessage
 from zope import schema
+from zope.interface import invariant, Invalid
 from z3c.form import button, field
 
 from docent.boosters.clubmanagement import _
@@ -97,6 +98,12 @@ class IBoosterProposalForm(form.Schema):
         title=_(u'I agree'),
         constraint=validateAccept,
     )
+
+    @invariant
+    def officerInvariant(data):
+        if data.club_president == data.club_secretary:
+            raise Invalid(_(u"The club president and secretary cannot be the same individual."))
+
 
 grok.templatedir('templates')
 
