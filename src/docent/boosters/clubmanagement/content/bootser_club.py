@@ -14,9 +14,11 @@ from plone.dexterity.content import Container
 from plone.directives import form
 from plone.indexer import indexer
 from plone.namedfile.field import NamedBlobFile
+from plone.supermodel.directives import fieldset
 
 from Products.CMFCore.utils import getToolByName
 from zope import schema
+from zope.interface import invariant, Invalid
 
 from docent.boosters.clubmanagement import _
 
@@ -24,57 +26,132 @@ logger = logging.getLogger("Plone")
 
 from docent.group.vocabularies.vocabularies import TRAINED_MEMBERS_GROUP_ID
 
+def validateAccept(value):
+    if not value == True:
+        return False
+    return True
+
+
+
 class IBoosterClub(form.Schema):
     """
     Uses IDublinCore
     """
+    # fieldset('booster_club_information',
+    #     label=u'Booster Club Information',
+    #     fields=['title', 'booster_organization']
+    # )
+
+    title = schema.TextLine(
+        title=_(u"Club Name"),
+    )
 
     booster_organization = schema.TextLine(
         title=_(u"LWHS Organization"),
-        description=_(u"Enter the name of the LWHS Boosterr organization sponsoring this club."),
-        required=False,
+        required=True,
     )
+
+    # fieldset('officer_information',
+    #     label=u'Officer Information',
+    #     description=u'Note:  Two board members must have the "Good Practices Training" before the club can be approved. '
+    #                 u'You may submit your application, and it will be held until this requirement is met. Also, one '
+    #                 u'person may hold up to two Officer positions."',
+    #     fields=['club_president',
+    #             'club_secretary',
+    #             'club_treasurer',]
+    # )
 
     club_president = schema.Choice(
         title=_(u"President"),
-        description=_(u"Select LWHS Booster member that will serve as club president."),
         vocabulary=u'docent.group.Booster_Members',
-        required=False,
+        required=True,
         )
 
     club_secretary = schema.Choice(
         title=_(u"Secretary"),
-        description=_(u"Select LWHS Booster member that will serve as club secretary."),
         vocabulary=u'docent.group.Booster_Members',
-        required=False,
+        required=True,
         )
 
     club_treasurer = schema.Choice(
         title=_(u"Treasurer"),
-        description=_(u"Select LWHS Booster member that will serve as club treasurer."),
         vocabulary=u'docent.group.Booster_Members',
-        required=False,
+        required=True,
         )
+
+    # fieldset('advisor_information',
+    #     label=u'Advisor Information',
+    #     description=u'',
+    #     fields=['club_advisor',]
+    # )
 
     club_advisor = schema.Choice(
         title=_(u"LWHS Advisor"),
-        description=_(u"Select LWHS Advisor for this club."),
         vocabulary=u'docent.group.Advisors',
-        required=False,
         )
 
-    agreement_file = NamedBlobFile(
-        title=_(u"File"),
-        description=_(u"Upload the completed Agreement file."),
-        required=False,
-    )
+    # fieldset('agreement_upload',
+    #     label=u'File',
+    #     description=u'<p>1) We still need the paper form completed and uploaded.  Please download the Agreement.</p>'
+    #                 u'<p>2) Once completed, please upload the form.</p>',
+    #     fields=['agreement_file',]
+    # )
+    #
+    # agreement_file = NamedBlobFile(
+    #     title=_(u"File"),
+    # )
+
+    # fieldset('financial_information',
+    #     label=u'Financial Information',
+    #     description=u'',
+    #     fields=['dedicated_checking', 'review_officers', 'review_revenue',
+    #             'review_officer_one', 'review_officer_two']
+    # )
+
+    dedicated_checking = schema.Bool(
+        title=_(u'1. Does your group maintain a dedicated checking account?'),
+        description=_(u''),
+        constraint=validateAccept)
+
+    review_officers = schema.Bool(
+        title=_(u'2. Do two officers review expenditures?'),
+        description=_(u''),
+        constraint=validateAccept)
+
+    review_revenue = schema.Bool(
+        title=_(u'3. Do two officers review revenues?'),
+        description=_(u''),
+        constraint=validateAccept)
+
+    review_officer_one = schema.Choice(
+        title=_(u"4. Review Officer One."),
+        description=_(u"Select the name of of your first review officer. It must match on of "
+                      u"your club officers."),
+        vocabulary=u'docent.group.Booster_Members',
+        required=True,
+        )
+
+    review_officer_two = schema.Choice(
+        title=_(u"4. Review Officer Two."),
+        description=_(u"Select the name of of your second review officer. It must match on of "
+                      u"your club officers."),
+        vocabulary=u'docent.group.Booster_Members',
+        required=True,
+        )
+
+    # fieldset('agreement_confirmation',
+    #     label=u'Agreement',
+    #     description=_(u'I understand and agree to abide by the membership agreement and '
+    #                   u'financial reporting requirements'),
+    #     fields=['agreement_bool',]
+    # )
 
     agreement_bool = schema.Bool(
         title=_(u'I agree'),
         description=_(u'I understand and agree to abide by the membership agreement and '
                       u'financial reporting requirements'),
-        required=False,
-        default=False)
+        constraint=validateAccept,
+    )
 
     form.mode(approval_date='hidden')
     approval_date = schema.Date(
@@ -82,6 +159,20 @@ class IBoosterClub(form.Schema):
         description=_(u'This is a calculated field. Do not input.'),
         required=False,)
 
+    @invariant
+    def officerInvariant(data):
+        if data.club_president == data.club_secretary:
+            raise Invalid(_(u"The club president and secretary cannot be the same individual."))
+
+    @invariant
+    def reviewerInvariant(data):
+        if data.review_officer_one == data.review_officer_two:
+            raise Invalid(_(u"The reviewing officers cannot be the same people."))
+        club_officers = [data.club_president, data.club_secretary, data.club_treasurer]
+        if data.review_officer_one not in club_officers:
+            raise Invalid(_(u"Reviewing officer one must a club officer."))
+        if data.review_officer_two not in club_officers:
+            raise Invalid(_(u"Reviewing officer two must a club officer."))
 
 class BoosterClub(Container):
     """

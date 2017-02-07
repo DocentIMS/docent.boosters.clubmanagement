@@ -36,17 +36,30 @@
             <li>LWHS Advisor: <span tal:replace="view/club_advisor" /></li>
         </ul>
     </div>
-    <div class="agreement-file" tal:define="hasFile view/hasFile">
-        <h3>Agreement File</h3>
+    <div class="financial-information">
+        <h3>Financial Information</h3>
         <ul>
-            <li>Agreement: <a href="#" target="blank" tal:condition="hasFile" tal:attributes="href string: ${context/absolute_url}/@@display-file/agreement_file">
-                               Agreement File
-                           </a> (opens in new page)
-                            <span tal:condition="not:hasFile" tal:replace="string: No Agreement Form Linked" />
-                           </li>
+            <li tal:define="d_c context/dedicated_checking">1. Does your group maintain a dedicated checking account? <span tal:condition="d_c" tal:replace="string:Yes"/>
+                                                                                                                      <span tal:condition="not:d_c" tal:replace="string:No"/></li>
+            <li tal:define="r_o context/review_officers">2. Do two officers review expenditures? <span tal:condition="r_o" tal:replace="string:Yes"/>
+                                                                                                 <span tal:condition="not:r_o" tal:replace="string:No"/></li>
+            <li tal:define="r_r context/review_revenue">3. Do two officers review revenues? <span tal:condition="r_r" tal:replace="string:Yes"/>
+                                                                                            <span tal:condition="not:r_r" tal:replace="string:No"/></li>
+            <li>4. Reviewing Officer One: <span tal:replace="view/review_officer_one" /></li>
+            <li>5. Reviewing Officer Two: <span tal:replace="view/review_officer_two" /></li>
         </ul>
-
     </div>
+    <!--<div class="agreement-file" tal:define="hasFile view/hasFile">-->
+        <!--<h3>Agreement File</h3>-->
+        <!--<ul>-->
+            <!--<li>Agreement: <a href="#" target="blank" tal:condition="hasFile" tal:attributes="href string: ${context/absolute_url}/@@display-file/agreement_file">-->
+                               <!--Agreement File-->
+                           <!--</a> (opens in new page)-->
+                            <!--<span tal:condition="not:hasFile" tal:replace="string: No Agreement Form Linked" />-->
+                           <!--</li>-->
+        <!--</ul>-->
+
+    <!--</div>-->
     <div class="agreement" tal:define="tou context/agreement_bool">
         <h3>Agreement</h3>
         <ul>

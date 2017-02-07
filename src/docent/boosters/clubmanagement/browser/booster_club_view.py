@@ -32,6 +32,17 @@ class View(grok.View):
         self.club_secretary = getMemberFullname(context.club_secretary)
         self.club_treasurer = getMemberFullname(context.club_treasurer)
         self.club_advisor = getMemberFullname(context.club_advisor)
+        self.review_officer_one = getMemberFullname(context.review_officer_one)
+        self.review_officer_two = getMemberFullname(context.review_officer_two)
+
+        current_viewer = api.user.get_current()
+        active_roles = api.user.get_roles(user=current_viewer, obj=context)
+        if 'Owner' in active_roles:
+            context_state = api.content.get_state(obj=context)
+            if context_state == 'pending':
+                context.verifyClubOfficers()
+            if context_state == 'approved':
+                context.officersHaveTraining()
 
     def hasFile(self):
         context = self.context

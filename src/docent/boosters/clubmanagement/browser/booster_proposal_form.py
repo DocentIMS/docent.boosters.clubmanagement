@@ -3,6 +3,7 @@ from AccessControl.SecurityManagement import newSecurityManager, setSecurityMana
 from AccessControl.User import UnrestrictedUser as BaseUnrestrictedUser
 
 from docent.boosters.clubmanagement.content.booster_clubs_folder import IBoosterClubsFolder
+
 from five import grok
 
 from plone import api
@@ -26,7 +27,9 @@ def validateAccept(value):
     return True
 
 class IBoosterProposalForm(form.Schema):
-
+    """
+    Uses IBoosterClub Schema
+    """
     fieldset('booster_club_information',
         label=u'Booster Club Information',
         fields=['title', 'booster_organization']
@@ -76,16 +79,54 @@ class IBoosterProposalForm(form.Schema):
         vocabulary=u'docent.group.Advisors',
         )
 
-    fieldset('agreement_upload',
-        label=u'File',
-        description=u'<p>1) We still need the paper form completed and uploaded.  Please download the Agreement.</p>'
-                    u'<p>2) Once completed, please upload the form.</p>',
-        fields=['agreement_file',]
+    # fieldset('agreement_upload',
+    #     label=u'File',
+    #     description=u'<p>1) We still need the paper form completed and uploaded.  Please download the Agreement.</p>'
+    #                 u'<p>2) Once completed, please upload the form.</p>',
+    #     fields=['agreement_file',]
+    # )
+    #
+    # agreement_file = NamedBlobFile(
+    #     title=_(u"File"),
+    # )
+
+    fieldset('financial_information',
+        label=u'Financial Information',
+        description=u'',
+        fields=['dedicated_checking', 'review_officers', 'review_revenue',
+                'review_officer_one', 'review_officer_two']
     )
 
-    agreement_file = NamedBlobFile(
-        title=_(u"File"),
-    )
+    dedicated_checking = schema.Bool(
+        title=_(u'1. Does your group maintain a dedicated checking account?'),
+        description=_(u''),
+        constraint=validateAccept)
+
+    review_officers = schema.Bool(
+        title=_(u'2. Do two officers review expenditures?'),
+        description=_(u''),
+        constraint=validateAccept)
+
+    review_revenue = schema.Bool(
+        title=_(u'3. Do two officers review revenues?'),
+        description=_(u''),
+        constraint=validateAccept)
+
+    review_officer_one = schema.Choice(
+        title=_(u"4. Review Officer One."),
+        description=_(u"Select the name of of your first review officer. It must match one of "
+                      u"your club officers."),
+        vocabulary=u'docent.group.Booster_Members',
+        required=True,
+        )
+
+    review_officer_two = schema.Choice(
+        title=_(u"4. Review Officer Two."),
+        description=_(u"Select the name of of your second review officer. It must match one of "
+                      u"your club officers."),
+        vocabulary=u'docent.group.Booster_Members',
+        required=True,
+        )
 
     fieldset('agreement_confirmation',
         label=u'Agreement',
@@ -104,6 +145,15 @@ class IBoosterProposalForm(form.Schema):
         if data.club_president == data.club_secretary:
             raise Invalid(_(u"The club president and secretary cannot be the same individual."))
 
+    @invariant
+    def reviewerInvariant(data):
+        if data.review_officer_one == data.review_officer_two:
+            raise Invalid(_(u"The reviewing officers cannot be the same people."))
+        club_officers = [data.club_president, data.club_secretary, data.club_treasurer]
+        if data.review_officer_one not in club_officers:
+            raise Invalid(_(u"Reviewing officer one must a club officer."))
+        if data.review_officer_two not in club_officers:
+            raise Invalid(_(u"Reviewing officer two must a club officer."))
 
 grok.templatedir('templates')
 
@@ -169,7 +219,12 @@ class BoosterProposalForm(form.SchemaForm):
         club_secretary = data.get('club_secretary', u'')
         club_treasurer = data.get('club_treasurer', u'')
         club_advisor = data.get('club_advisor', u'')
-        agreement_file = data.get('agreement_file', None)
+        #agreement_file = data.get('agreement_file', None)
+        dedicated_checking = data.get('dedicated_checking', False)
+        review_officers = data.get('review_officers', False)
+        review_revenue = data.get('review_revenue', False)
+        review_officer_one = data.get('review_officer_one', u'')
+        review_officer_two = data.get('review_officer_two', u'')
         agreement_bool = data.get('agreement_bool', False)
 
         #create a temporary security manage
@@ -192,7 +247,12 @@ class BoosterProposalForm(form.SchemaForm):
             setattr(proposed_club_obj, 'club_secretary', club_secretary)
             setattr(proposed_club_obj, 'club_treasurer', club_treasurer)
             setattr(proposed_club_obj, 'club_advisor', club_advisor)
-            setattr(proposed_club_obj, 'agreement_file', agreement_file)
+            #setattr(proposed_club_obj, 'agreement_file', agreement_file)
+            setattr(proposed_club_obj, 'dedicated_checking', dedicated_checking)
+            setattr(proposed_club_obj, 'review_officers', review_officers)
+            setattr(proposed_club_obj, 'review_revenue', review_revenue)
+            setattr(proposed_club_obj, 'review_officer_one', review_officer_one)
+            setattr(proposed_club_obj, 'review_officer_two', review_officer_two)
             setattr(proposed_club_obj, 'agreement_bool', agreement_bool)
 
             #set ownership
