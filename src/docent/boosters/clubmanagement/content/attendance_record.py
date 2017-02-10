@@ -86,10 +86,19 @@ class AttendanceRecord(Item):
 
     def after_object_added_processor(self, context, event):
         """
+        Depricated instead called by transition as send_club_notice
+        :param context:
+        :param event:
+        :return:
+        """
+
+    def send_club_notice(self):
+        """
         Assemble a list of booster clubs that did not attend the meeting
         :return:
         """
-        parent_container = event.newParent
+        context = self
+        parent_container = context.aq_parent
         pc_path = '/'.join(parent_container.getPhysicalPath())
         catalog = getToolByName(parent_container, 'portal_catalog')
         active_club_brains = catalog(path={'query': pc_path, 'depth': 1},

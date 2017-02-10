@@ -68,7 +68,3 @@ class BoosterClubsFolder(Container):
 
         self.manage_setLocalRoles(BOOSTER_BOARD_MEMBERS_GROUP_ID, ['Reviewer'])
 
-    def after_object_added_processor(self, context, newName, newParent):
-        object = getattr(context, newName, None)
-        if object:
-            object.process_records()

@@ -19,11 +19,11 @@
     <tal:main-macro metal:define-macro="main">
 
     <div tal:replace="structure provider:plone.abovecontenttitle" />
-    <h1>Booster Clubs</h1>
+    <h1>Boosters</h1>
     <div tal:replace="structure provider:plone.belowcontenttitle" />
     <div tal:replace="structure provider:plone.abovecontentbody" />
-    <p>These boosters have been approved by the LWHS Booster Executive Boosters. If your group is not listed here, it has not been approved.</p>
-    <p tal:condition="view/showProposalLink"><a href="" tal:attributes="href string: ${context/absolute_url}/@@booster-club-proposal">Propose New Booster Club</a></p>
+    <p>This section contains all the information you need about boosters.</p>
+    <p><a href="" tal:attributes="href string: ${context/absolute_url}/proposing-a-club">How Do I Propose a Club?</a></p>
     <p tal:condition="view/adminisrative_role"><a href="" tal:attributes="href string: ${context/absolute_url}/++add++attendance_record">Add Attendance Record</a></p>
 
     <p>If you have a question contact the <a href="#" tal:attributes="href string:mailto:${context/executive_secretary_email}&subject=LWHS%20Boosters%20Club%20Question">Executive Secretary</a>.</p>
@@ -42,6 +42,10 @@
                                   attendance_record_brains view/attendance_record_brains;">
     <section>
         <h2>Active</h2>
+        <p>These active clubs have been approved by the Booster Executive Board and at least two club board members
+            have been trained in the LWHS Booster "Best Practices Training".</p>
+        <p>These active clubs are full participants and may raise and spend money under the LWHS Booster non-profit
+            umbrella.</p>
         <table>
             <tr>
                 <th>Club Name</th>
@@ -63,6 +67,10 @@
     </section>
     <section tal:condition="show_approved">
         <h2>Approved</h2>
+        <p>These approved clubs have been approved by the LWHS Executive Boosters; however, two club board members have
+            not completed the LWHS Boosters “Best Practices Training”. Please schedule the training with the
+            <a href="mailto:treasurer@lwhsboosters.org">Executive Treasurer</a>.</p>
+        <p>Approved clubs are not Active and may not raise and spend money under the LWHS Booster non-profit status.</p>
         <table>
             <tr>
                 <th>Club Name</th>
@@ -83,6 +91,7 @@
     </section>
     <section tal:condition="show_pending">
         <h2>Pending</h2>
+        <p>These clubs are awaiting review by the Executive Boosters.</p>
         <table>
             <tr>
                 <th>Club Name</th>
@@ -101,6 +110,7 @@
     </section>
     <section tal:condition="show_draft">
         <h2>Draft</h2>
+        <p>The applications for these clubs have not been completed.</p>
         <table>
             <tr>
                 <th>Club Name</th>
@@ -119,6 +129,8 @@
     </section>
     <section tal:condition="show_archived">
         <h2>Archived</h2>
+        <p>These clubs have been closed for various reasons. These clubs may be reactivated to go through the approval
+            process again. <em>(Note:  this tab is only visible to Executive Boosters.)</em></p>
         <table>
             <tr>
                 <th>Club Name</th>
@@ -144,7 +156,7 @@
                 <a href="#" title="#"
                         tal:attributes="href attendance_record/getURL;
                                         title attendance_record/Title">
-                    <span tal:replace="attendance_record/Title" /></a></li>
+                    <span tal:replace="attendance_record/Title" /></a> <span tal:condition="python: view.isPrivate(attendance_record)" tal:replace="string:- Private" /></li>
         </ul>
     </section>
     </tal:clubSections>

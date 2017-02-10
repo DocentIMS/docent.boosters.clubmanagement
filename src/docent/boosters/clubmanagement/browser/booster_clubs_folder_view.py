@@ -125,3 +125,8 @@ class View(grok.View):
             if club_owner.getId() == current_member.getId():
                 return True
         return False
+
+    def isPrivate(self, attendance_brain):
+        if attendance_brain.review_state == 'private':
+            return True
+        return False
