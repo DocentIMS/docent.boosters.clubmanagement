@@ -96,7 +96,10 @@ class IBoosterProposalForm(form.Schema):
 
     fieldset('financial_information',
         label=u'Financial Information',
-        description=u'',
+        description=u'All booster clubs must satisfy the following criteria:'
+                    u'<ul><li>1. Your group maintain a dedicated checking account.</li>'
+                    u'<li>2. Two officers review expenditures.</li>'
+                    u'<li>3. Two officers review revenues.</li></ul>',
         fields=['dedicated_checking', 'review_officers', 'review_revenue',
                 'review_officer_one', 'review_officer_two']
     )
@@ -125,7 +128,7 @@ class IBoosterProposalForm(form.Schema):
         )
 
     review_officer_two = schema.Choice(
-        title=_(u"4. Review Officer Two."),
+        title=_(u"5. Review Officer Two."),
         description=_(u"Select the name of of your second review officer. It must match one of "
                       u"your club officers."),
         vocabulary=u'docent.group.Booster_Members',
