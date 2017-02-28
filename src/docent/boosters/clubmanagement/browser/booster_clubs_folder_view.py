@@ -7,6 +7,8 @@ from docent.boosters.clubmanagement.content.booster_clubs_folder import IBooster
 from docent.boosters.clubmanagement.content.bootser_club import IBoosterClub
 from docent.boosters.clubmanagement.content.attendance_record import IAttendanceRecord
 
+from docent.boosters.clubmanagement.browser.booster_club_view import getMemberNameAndEmail
+
 logger = logging.getLogger("Plone")
 
 grok.templatedir('templates')
@@ -113,6 +115,12 @@ class View(grok.View):
             return 'Unknown'
 
         return fullname
+
+    def getPresidentEmail(self, club_obj):
+        president_id = getattr(club_obj, 'club_president', '')
+        email_structure = getMemberNameAndEmail(president_id)
+
+        return email_structure
 
     def showOrHideTabs(self, club_objs):
         if self.adminisrative_role:

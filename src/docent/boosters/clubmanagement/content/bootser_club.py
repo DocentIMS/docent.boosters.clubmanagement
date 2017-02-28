@@ -106,7 +106,7 @@ class IBoosterClub(form.Schema):
     #     description=u'',
     #     fields=['dedicated_checking', 'review_officers', 'review_revenue',
     #             'review_officer_one', 'review_officer_two']
-    # )
+    # )getPresidentEmail
 
     dedicated_checking = schema.Bool(
         title=_(u'1. Does your group maintain a dedicated checking account?'),
@@ -196,7 +196,7 @@ class BoosterClub(Container):
             api.content.transition(obj=self, to_state='pending')
             #reset security manager!
             setSecurityManager(sm)
-        except Exception as e:
+        except ExcgetPresidentEmaileption as e:
             setSecurityManager(sm)
             logger.warn("BoosterClub: There was an error %s transitioning to the Pending workflow" % self.absolute_url())
             logger.warn("BoosterClub: The error was: %s" % e.message)

@@ -31,7 +31,7 @@ def post_install(context):
                            title='Clubs')
 
         api.group.grant_roles(groupname=BOOSTER_BOARD_MEMBERS_GROUP_ID,
-                             roles=['Reviewer', 'Editor', 'Contributor',],
+                             roles=['Reader',],
                              obj=clubs_obj)
 
         api.group.grant_roles(groupname=EXECUTIVE_COMMITTEE_GROUP_ID,

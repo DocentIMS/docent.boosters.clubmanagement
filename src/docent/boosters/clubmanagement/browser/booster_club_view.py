@@ -77,3 +77,12 @@ class View(grok.View):
             return False
 
         return False
+
+    def getOwnerName(self):
+        context = self.context
+        owner = context.getOwner()
+        fullname = owner.getProperty('fullname')
+        if not fullname:
+            return 'Unknown'
+
+        return fullname

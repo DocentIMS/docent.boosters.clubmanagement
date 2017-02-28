@@ -45,9 +45,13 @@ class IBoosterProposalForm(form.Schema):
 
     fieldset('officer_information',
         label=u'Officer Information',
-        description=u'Note:  Two board members must have the "Good Practices Training" before the club can be approved. '
-                    u'You may submit your application, and it will be held until this requirement is met. Also, one '
-                    u'person may hold up to two Officer positions."',
+        description=u"Notes: 1) All registered users are shown in the officer pulldown lists. "
+                    u"Only advisers are shown in the adviser pulldown. If the name you are "
+                    u"looking for is not there, the person hasn't registered. Not listed? "
+                    u"<a href='http://mckennariley.info/@@register'>Register</a>. 2) Two board members must have the \"Good Practices Training\" "
+                    u"before the club can be approved. You may submit your application, and it "
+                    u"will be held until this requirement is met. 3) One person may hold up to "
+                    u"two Officer positions.",
         fields=['club_president',
                 'club_secretary',
                 'club_treasurer',]

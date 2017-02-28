@@ -25,6 +25,7 @@
         <ul>
             <li>Club Name: <span tal:replace="context/title" /></li>
             <li>LWHS Organization: <span tal:replace="context/booster_organization|nothing" /></li>
+            <li>Submitted By: <span tal:replace="view/getOwnerName" /></li>
         </ul>
     </div>
     <div class="club-officers">
