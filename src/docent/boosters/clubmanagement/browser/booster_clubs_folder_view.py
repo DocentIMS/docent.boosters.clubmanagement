@@ -75,7 +75,9 @@ class View(grok.View):
 
         if isAnon:
             current_user_groups = []
+            attendance_record_brains = []
             administrative_role = False
+
         else:
             current_user_data = api.user.get_current()
             current_user_id = current_user_data.getId()

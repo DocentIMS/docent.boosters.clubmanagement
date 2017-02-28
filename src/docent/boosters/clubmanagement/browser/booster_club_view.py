@@ -26,20 +26,20 @@ def getMemberNameAndEmail(member_id):
     :param member_id:
     :return:
     """
-    if member_id == 'no_members':
+    if member_id == 'no_members' or member_id == '':
         return u'No Member Selected'
     email = None
     try:
         member_data = api.user.get(username=member_id)
         fullname = member_data.getProperty('fullname')
-        email = member_data.getPropertry('email')
+        email = member_data.getProperty('email')
     except MissingParameterError:
         fullname = member_id
     except AttributeError:
         fullname = member_id
 
     if email:
-        return '<a href="mailto:%s>%s</a>' % (email, fullname)
+        return '<a href="mailto:%s">%s</a>' % (email, fullname)
     else:
         return fullname
 
