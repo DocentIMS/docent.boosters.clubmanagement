@@ -136,5 +136,4 @@
   <guard >
   </guard>
  </variable>
- <script script_id="sendClubNotice" type="Script (Python)" filename="workflows/attendance_record_workflow/scripts/sendClubNotice.py" module="" function="" />
 </dc-workflow>

@@ -297,5 +297,4 @@
   <guard >
   </guard>
  </variable>
- <script script_id="updateApprovalDate" type="Script (Python)" filename="workflows/booster_club_workflow/scripts/updateApprovalDate.py" module="" function="" />
 </dc-workflow>
