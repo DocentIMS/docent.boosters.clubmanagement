@@ -85,6 +85,7 @@
                 <td tal:condition="not:isAnon" tal:content="structure python:view.getPresidentEmail(approved_club)"></td>
                 <td tal:content="approved_club/attendanceRecord"></td>
                 <td tal:content="approved_club/booster_organization|nothing"></td>
+                <td tal:content="approved_club/approval_date|nothing"></td>
             </tr>
         </table>
     </section>
