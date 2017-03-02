@@ -204,33 +204,19 @@ class BoosterClub(Container):
                                         request=self.REQUEST,
                                         type='warn')
 
-
-    def after_transition_editor(self):
+    def after_transition_processor(self):
         context_state = api.content.get_state(obj=self)
         if context_state == 'approved':
-            sm = getSecurityManager()
-            role = 'Manager'
-            tmp_user = BaseUnrestrictedUser(sm.getUser().getId(), '', [role], '')
-            portal= api.portal.get()
-            tmp_user = tmp_user.__of__(portal.acl_users)
-            newSecurityManager(None, tmp_user)
-            try:
-                self.set_approval_date()
-                #reset security manager!
-                setSecurityManager(sm)
-            except Exception as e:
-                setSecurityManager(sm)
-                logger.warn("BoosterClub: There was an error %s transitioning to the Pending workflow" % self.absolute_url())
-                logger.warn("BoosterClub: The error was: %s" % e.message)
-                api.portal.show_message(message="There was an error updating your club. Please contact an administrator.",
-                                            request=self.REQUEST,
-                                            type='warn')
-
+            self.set_approval_date()
+        elif context_state not in ['active', 'archived']:
+            self.remove_approval_date()
 
     def set_approval_date(self):
         today = date.today()
         setattr(self, 'approval_date', today)
 
+    def remove_approval_date(self):
+        setattr(self, 'approval_date', None)
 
     def verifyClubOfficers(self):
         """

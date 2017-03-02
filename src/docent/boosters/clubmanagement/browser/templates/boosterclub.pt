@@ -19,13 +19,13 @@
     <tal:main-macro metal:define-macro="main">
 
     <div tal:replace="structure provider:plone.abovecontenttitle" />
-    <div class="booster-club-content">
+    <div tal:condition="not:view/isAnon" class="booster-club-content">
     <div class="club-info">
         <h3>Club Info</h3>
         <ul>
             <li>Club Name: <span tal:replace="context/title" /></li>
             <li>LWHS Organization: <span tal:replace="context/booster_organization|nothing" /></li>
-            <li>Submitted By: <span tal:replace="view/getOwnerName" /></li>
+            <li>Owned By: <span tal:replace="view/getOwnerName" /><span tal:condition="view/isAdmin" > - <a href="#" tal:attributes="href view/getOwnerUpdateUrl">update owner to president</a></span></li>
         </ul>
     </div>
     <div class="club-officers">
@@ -74,7 +74,13 @@
             <li><span tal:replace="context/approval_date" /></li>
         </ul>
     </div>
-
+    <div class="financial_files" tal:condition="view/statementAccess" tal:define="club_files view/getClubFiles">
+        <h3>Statements</h3>
+        <p><a href="#" tal:attributes="href view/getFileUploadLink">Add bank statement</a>.</p>
+        <ul>
+            <li tal:repeat="club_file club_files"><a href="#" tal:attributes="href club_file/getURL"><span tal:replace="club_file/Title" /></a> - <span tal:replace="club_file/created" /></li>
+        </ul>
+    </div>
     </div>
     <div tal:replace="structure provider:plone.belowcontenttitle" />
     <div tal:replace="structure provider:plone.abovecontentbody" />

@@ -21,6 +21,20 @@ from docent.boosters.clubmanagement import _
 import logging
 logger = logging.getLogger("Plone")
 
+def getOfficerDescription():
+    portal = api.portal.get()
+    portal_url = portal.absolute_url()
+    description_txt = u"Notes: 1) All registered users are shown in the officer pulldown lists. " \
+                      u"Only advisers are shown in the adviser pulldown. If the name you are " \
+                      u"looking for is not there, the person hasn't registered. Not listed? " \
+                      u"<a href='%s/@@register'>Register</a>. 2) Two board " \
+                      u"members must have the \"Good Practices Training\" before the club can be " \
+                      u"approved. You may submit your application, and it " \
+                      u"will be held until this requirement is met. 3) One person may hold up to " \
+                      u"two Officer positions." % portal_url
+
+    return description_txt
+
 def validateAccept(value):
     if not value == True:
         return False
@@ -45,13 +59,7 @@ class IBoosterProposalForm(form.Schema):
 
     fieldset('officer_information',
         label=u'Officer Information',
-        description=u"Notes: 1) All registered users are shown in the officer pulldown lists. "
-                    u"Only advisers are shown in the adviser pulldown. If the name you are "
-                    u"looking for is not there, the person hasn't registered. Not listed? "
-                    u"<a href='http://mckennariley.info/@@register'>Register</a>. 2) Two board members must have the \"Good Practices Training\" "
-                    u"before the club can be approved. You may submit your application, and it "
-                    u"will be held until this requirement is met. 3) One person may hold up to "
-                    u"two Officer positions.",
+        description=getOfficerDescription,
         fields=['club_president',
                 'club_secretary',
                 'club_treasurer',]
@@ -162,13 +170,13 @@ class IBoosterProposalForm(form.Schema):
         if data.review_officer_two not in club_officers:
             raise Invalid(_(u"Reviewing officer two must a club officer."))
 
-grok.templatedir('templates')
+#grok.templatedir('templates')
 
 class BoosterProposalForm(form.SchemaForm):
     grok.name('booster-club-proposal')
-    grok.require('zope2.View')
+    grok.require('cmf.SetOwnPassword')
     grok.context(IBoosterClubsFolder)
-    grok.template("booster_proposal_form")
+    # grok.template("booster_proposal_form")
 
     #fields = field.Fields(IBoosterProposalForm)
 

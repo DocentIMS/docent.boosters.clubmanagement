@@ -91,6 +91,13 @@ class AttendanceRecord(Item):
         :param event:
         :return:
         """
+        pass
+
+    def after_transition_processor(self):
+        context_state = api.content.get_state(obj=self)
+        if context_state == 'published':
+            self.send_club_notice()
+
 
     def send_club_notice(self):
         """

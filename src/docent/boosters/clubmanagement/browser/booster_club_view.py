@@ -2,6 +2,7 @@ import logging
 from five import grok
 from plone import api
 from plone.api.exc import MissingParameterError
+from plone.protect.utils import addTokenToUrl
 
 from docent.boosters.clubmanagement.content.bootser_club import IBoosterClub
 
@@ -51,22 +52,23 @@ class View(grok.View):
 
     def update(self):
         context = self.context
+        if not api.user.is_anonymous():
+            self.context_url = context.absolute_url()
+            self.club_president = getMemberNameAndEmail(context.club_president)
+            self.club_secretary = getMemberNameAndEmail(context.club_secretary)
+            self.club_treasurer = getMemberNameAndEmail(context.club_treasurer)
+            self.club_advisor = getMemberNameAndEmail(context.club_advisor)
+            self.review_officer_one = getMemberNameAndEmail(context.review_officer_one)
+            self.review_officer_two = getMemberNameAndEmail(context.review_officer_two)
 
-        self.club_president = getMemberNameAndEmail(context.club_president)
-        self.club_secretary = getMemberNameAndEmail(context.club_secretary)
-        self.club_treasurer = getMemberNameAndEmail(context.club_treasurer)
-        self.club_advisor = getMemberNameAndEmail(context.club_advisor)
-        self.review_officer_one = getMemberNameAndEmail(context.review_officer_one)
-        self.review_officer_two = getMemberNameAndEmail(context.review_officer_two)
-
-        current_viewer = api.user.get_current()
-        active_roles = api.user.get_roles(user=current_viewer, obj=context)
-        if 'Owner' in active_roles:
-            context_state = api.content.get_state(obj=context)
-            if context_state == 'pending':
-                context.verifyClubOfficers()
-            if context_state == 'approved':
-                context.officersHaveTraining()
+            current_viewer = api.user.get_current()
+            active_roles = api.user.get_roles(user=current_viewer, obj=context)
+            if 'Owner' in active_roles:
+                context_state = api.content.get_state(obj=context)
+                if context_state == 'pending':
+                    context.verifyClubOfficers()
+                if context_state == 'approved':
+                    context.officersHaveTraining()
 
     def hasFile(self):
         context = self.context
@@ -86,3 +88,42 @@ class View(grok.View):
             return 'Unknown'
 
         return fullname
+
+    def isAnon(self):
+        return api.user.is_anonymous()
+
+    def isAdmin(self):
+        current_member = api.user.get_current()
+
+        return api.user.has_permission("cmf.ManagePortal",
+                                       user=current_member)
+
+    def statementAccess(self):
+        current_member = api.user.get_current()
+
+        if api.user.has_permission("cmf.ManagePortal",
+                                   user=current_member):
+            return True
+
+        if current_member.getId() == self.club_president:
+            return True
+
+        if api.user.has_permission("Boosters: Manage Clubs",
+                                   user=current_member):
+            return True
+
+        return False
+
+    def getFileUploadLink(self):
+        upload_url = '%s/++add++File' % self.context_url
+
+        return upload_url
+
+    def getOwnerUpdateUrl(self):
+        #context = self.context
+        update_url = "%s/@@update-club-owner" % self.context_url
+
+        return addTokenToUrl(update_url)
+
+    def getClubFiles(self):
+        return self.context.getFolderContents()
