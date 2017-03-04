@@ -28,6 +28,12 @@ def getAbsenceDefaultText():
 
     return absence_text
 
+def getTrainingAbsenceDefaultText():
+    absence_text = u"We had our booster Best Practices Training last night.\n\nYou're receiving this email because you " \
+                   u"were scheduled to attend.\n\nPlease attend the next training session.\n\nSincerely,\nSecretary, " \
+                   u"LWHS Boosters"
+
+    return absence_text
 
 class IBoosterClubsFolder(form.Schema):
     """
@@ -47,6 +53,15 @@ class IBoosterClubsFolder(form.Schema):
                       u"The salutation should not be part of this message."),
         required=True,
         defaultFactory=getAbsenceDefaultText,
+    )
+
+    training_absence_notice = schema.Text(
+        title=_(u"Training Absence Notice"),
+        description=_(u"Text of email to be sent to absent booster members who did not attend the scheduled training. "
+                      u"This is a multi line field and line breaks will be recognized. "
+                      u"The salutation should not be part of this message."),
+        required=True,
+        defaultFactory=getTrainingAbsenceDefaultText,
     )
 
     agreement_file = NamedBlobFile(
@@ -83,8 +98,7 @@ class BoosterClubsFolder(Container):
                                          'start': date_range_query,
                                          'review_state':'published',
                                          'sort_on': 'start',
-                                         'count': 1,
-                                         'sort_order':'reverse'})
+                                         'count': 1,})
 
         if results:
             next_bpt_brain = results[0]

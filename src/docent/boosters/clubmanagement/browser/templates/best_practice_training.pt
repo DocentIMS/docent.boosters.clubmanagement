@@ -15,18 +15,19 @@
     <metal:block fill-slot="main">
 
         <h1 class="documentFirstHeading" tal:content="view/label | nothing" />
-        <tal:formBlock tal:define="next_bpt context/getNextTrainingEventObj;
-                                   next_date python:next_bpt.start.strftime('%B %d, %Y');
-                                   next_time python:next_bpt.start.strftime('%-I:%M %p')">
+        <tal:formBlock tal:define="next_bpt context/getNextTrainingEventObj;">
+        <tal:hasBTP tal:condition="next_bpt">
         <h4>Next Training Session Details</h4>
-        <ul class="next_bpt_event">
+        <ul class="next_bpt_event" tal:define="next_date python:next_bpt.start.strftime('%B %d, %Y');
+                                               next_time python:next_bpt.start.strftime('%-I:%M %p')">
             <li>Date: <span tal:replace="next_date" /></li>
             <li>Time: <span tal:replace="next_time" /></li>
             <li>Location: <span tal:replace="python:getattr(next_bpt, 'location', '')" /></li>
         </ul>
-        <div tal:condition="next_bpt" id="content-core">
+        <div id="content-core">
             <metal:block use-macro="context/@@ploneform-macros/titlelessform" />
         </div>
+        </tal:hasBTP>
         <div tal:condition="not:next_bpt" id="content-core">
             <p>There are no upcoming training sessions. Please check back later.</p>
         </div>

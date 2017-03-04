@@ -25,6 +25,7 @@
     <p>This section contains all the information you need about boosters.</p>
     <p><a href="" tal:attributes="href string: ${context/absolute_url}/proposing-a-club">How Do I Propose a Club?</a></p>
     <p tal:condition="view/adminisrative_role"><a href="" tal:attributes="href string: ${context/absolute_url}/++add++attendance_record">Add Attendance Record</a></p>
+    <p tal:condition="view/adminisrative_role"><a href="" tal:attributes="href string: ${context/absolute_url}/++add++training_record">Add Training Record</a></p>
 
     <p>If you have a question contact the <a href="#" tal:attributes="href string:mailto:${context/executive_secretary_email}&subject=LWHS%20Boosters%20Club%20Question">Executive Secretary</a>.</p>
     <div class="pat-autotoc autotabs" data-pat-autotoc="section:section;levels:h2;">
