@@ -8,6 +8,9 @@
   <type type_id="attendance_record">
    <bound-workflow workflow_id="attendance_record_workflow"/>
   </type>
+  <type type_id="training_record">
+   <bound-workflow workflow_id="attendance_record_workflow"/>
+  </type>
   <type type_id="booster_club">
    <bound-workflow workflow_id="booster_club_workflow"/>
   </type>

@@ -3,4 +3,6 @@
   <object name="booster_clubs_folder" meta_type="Dexterity FTI"/>
   <object name="booster_club" meta_type="Dexterity FTI"/>
   <object name="attendance_record" meta_type="Dexterity FTI"/>
+  <object name="training_record" meta_type="Dexterity FTI"/>
+  <object name="best_practice_training" meta_type="Dexterity FTI"/>
 </object>

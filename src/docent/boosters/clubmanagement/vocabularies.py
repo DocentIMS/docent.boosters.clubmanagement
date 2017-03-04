@@ -1,12 +1,37 @@
 from plone import api
+from plone.api.exc import GroupNotFoundError
 
 from docent.boosters.clubmanagement.content.booster_clubs_folder import IBoosterClubsFolder
 from docent.boosters.clubmanagement.content.bootser_club import IBoosterClub
+
+from docent.group.vocabularies.app_config import TRAINING_MEMBERS_GROUP_ID
 
 from Products.CMFCore.utils import getToolByName
 from zope.schema.vocabulary import SimpleVocabulary
 from zope.schema.interfaces import IVocabularyFactory
 from zope.interface import implementer
+
+
+def getGroupMemberVocabulary(group_name):
+    """Return a set of groupmembers, return an empty set if group not found
+    """
+    try:
+        group_members = api.user.get_users(groupname=group_name)
+    except GroupNotFoundError:
+        group_members = ()
+
+    terms = []
+
+    if group_members:
+        for member_data in group_members:
+            member_id = member_data.getId()
+            member_fullname = member_data.getProperty('fullname')
+
+            terms.append(SimpleVocabulary.createTerm(member_id, str(member_id), member_fullname))
+    else:
+        terms.append(SimpleVocabulary.createTerm('no_members', 'no_members', 'No Members'))
+
+    return SimpleVocabulary(terms)
 
 
 @implementer(IVocabularyFactory)
@@ -56,3 +81,13 @@ class IActiveBoosterClubVocabulary(object):
 
         return SimpleVocabulary(terms)
 IActiveBoosterClubVocabularyFactory = IActiveBoosterClubVocabulary()
+
+
+@implementer(IVocabularyFactory)
+class ITrainingRecordVocabulary(object):
+    """
+    build a vocabulary based on a the Trained Member Group
+    """
+    def __call__(self, context):
+        return getGroupMemberVocabulary(TRAINING_MEMBERS_GROUP_ID)
+ITrainingRecordVocabularyFactory = ITrainingRecordVocabulary()

@@ -22,3 +22,8 @@ class Iclub_folder(Interface):
         title=_(u'Description'),
         required=False,
     )
+
+class IBestPracticeTraining(Interface):
+    """
+    Marker interface for Best Practices Training type
+    """

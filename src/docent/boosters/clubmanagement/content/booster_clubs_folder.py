@@ -1,3 +1,5 @@
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from DateTime import DateTime
 import logging
 
 from plone import api
@@ -9,6 +11,7 @@ from plone.schema import Email
 from zope import schema
 
 from docent.group.vocabularies.vocabularies import BOOSTER_BOARD_MEMBERS_GROUP_ID
+from docent.boosters.clubmanagement.interfaces import IBestPracticeTraining
 from docent.boosters.clubmanagement import _
 
 logger = logging.getLogger("Plone")
@@ -58,6 +61,8 @@ class BoosterClubsFolder(Container):
     Baseclass for BoosterClubsFolder based on Container
     """
 
+    security = ClassSecurityInfo()
+
     def after_creation_processor(self, context, event):
         """Add Booster Board Members as a reviewer and reindex."""
         #get the booster board members club
@@ -67,4 +72,32 @@ class BoosterClubsFolder(Container):
             return
 
         self.manage_setLocalRoles(BOOSTER_BOARD_MEMBERS_GROUP_ID, ['Reviewer'])
+
+    def getNextTrainingEventBrain(self):
+        portal = api.portal.get()
+        catalog = portal.portal_catalog
+        start = DateTime()
+        end = DateTime() + 120
+        date_range_query = {'query': (start, end), 'range':'min:max'}
+        results = catalog.searchResults({'object_provides':IBestPracticeTraining.__identifier__,
+                                         'start': date_range_query,
+                                         'review_state':'published',
+                                         'sort_on': 'start',
+                                         'count': 1,
+                                         'sort_order':'reverse'})
+
+        if results:
+            next_bpt_brain = results[0]
+        else:
+            next_bpt_brain = None
+
+        return next_bpt_brain
+
+    security.declarePublic('getNextTrainingEventObj')
+    def getNextTrainingEventObj(self):
+        next_bpt_brain = self.getNextTrainingEventBrain()
+        if next_bpt_brain:
+            return next_bpt_brain.getObject()
+        else:
+            return None
 

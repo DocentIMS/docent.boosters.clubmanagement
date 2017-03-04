@@ -39,7 +39,8 @@
                                   show_pending python:view.showOrHideTabs(pending_clubs);
                                   show_draft python:view.showOrHideTabs(draft_clubs);
                                   show_archived python:view.showOrHideTabs(archived_clubs);
-                                  attendance_record_brains view/attendance_record_brains;">
+                                  attendance_record_brains view/attendance_record_brains;
+                                  training_record_brains view/training_record_brains;">
     <section>
         <h2>Active</h2>
         <p>These active clubs have been approved by the Booster Executive Board and at least two club board members
@@ -157,6 +158,19 @@
                         tal:attributes="href attendance_record/getURL;
                                         title attendance_record/Title">
                     <span tal:replace="attendance_record/Title" /></a> <span tal:condition="python: view.isPrivate(attendance_record)" tal:replace="string:- Private" /></li>
+        </ul>
+    </section>
+    <section tal:condition="training_record_brains" id="training_records">
+        <h2>Best Practices Training Records</h2>
+        <p>These are the attendance records for LHWS Booster Bester Practices Trianing.</p>
+        <p>Emails are automatically sent to all members that did not attend the meeting."</p>
+        <ul>
+            <li tal:repeat="training_record training_record_brains">
+                <a href="#" title="#"
+                        tal:attributes="href training_record/getURL;
+                                        title training_record/Title">
+                    <span tal:replace="training_record/Title" /></a> <span tal:condition="python: view.isPrivate(training_record)" tal:replace="string:- Private" />
+            </li>
         </ul>
     </section>
     </tal:clubSections>

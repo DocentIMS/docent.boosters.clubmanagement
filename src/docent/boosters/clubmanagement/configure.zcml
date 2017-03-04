@@ -41,6 +41,10 @@
       title="Boosters: Manage Clubs"
       />
 
+  <class class="docent.boosters.clubmanagement.content.best_practice_training.BestPracticeTraining">
+    <implements interface="docent.boosters.clubmanagement.interfaces.IBestPracticeTraining" />
+  </class>
+
   <subscriber
       for="docent.boosters.clubmanagement.content.bootser_club.IBoosterClub
       zope.lifecycleevent.interfaces.IObjectModifiedEvent"
@@ -55,6 +59,12 @@
 
   <subscriber
       for="docent.boosters.clubmanagement.content.attendance_record.IAttendanceRecord
+      Products.DCWorkflow.interfaces.IAfterTransitionEvent"
+      handler=".event_handlers.after_transition_processor"
+      />
+
+    <subscriber
+      for="docent.boosters.clubmanagement.content.training_record.ITrainingRecord
       Products.DCWorkflow.interfaces.IAfterTransitionEvent"
       handler=".event_handlers.after_transition_processor"
       />
@@ -74,6 +84,11 @@
   <utility
         name="docent.boosters.Active_Clubs"
         component="docent.boosters.clubmanagement.vocabularies.IActiveBoosterClubVocabularyFactory"
+    />
+
+    <utility
+        name="docent.boosters.Training_Records"
+        component="docent.boosters.clubmanagement.vocabularies.ITrainingRecordVocabularyFactory"
     />
 
   <utility
