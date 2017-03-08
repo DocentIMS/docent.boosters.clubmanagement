@@ -26,6 +26,7 @@
             <li>Club Name: <span tal:replace="context/title" /></li>
             <li>LWHS Organization: <span tal:replace="context/booster_organization|nothing" /></li>
             <li>Owned By: <span tal:replace="view/getOwnerName" /><span tal:condition="view/isAdmin" > - <a href="#" tal:attributes="href view/getOwnerUpdateUrl">update owner to president</a></span></li>
+            <li>Date Approved: <span tal:replace="context/approval_date|nothing" /></li>
         </ul>
     </div>
     <div class="club-officers">
@@ -66,12 +67,6 @@
         <ul>
             <li tal:condition="tou"><span tal:replace="string:Membership agreement accepted." /></li>
             <li tal:condition="not:tou"><span tal:replace="string:Membership agreement NOT accepted." /></li>
-        </ul>
-    </div>
-    <div class="approval_date" tal:condition="context/approval_date|nothing">
-        <h3>Approval Date</h3>
-        <ul>
-            <li><span tal:replace="context/approval_date" /></li>
         </ul>
     </div>
     <div class="financial_files" tal:condition="view/statementAccess" tal:define="club_files view/getClubFiles">

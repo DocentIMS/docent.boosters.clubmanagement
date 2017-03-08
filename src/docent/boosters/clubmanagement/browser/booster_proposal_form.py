@@ -29,7 +29,7 @@ def getOfficerDescription():
                       u"looking for is not there, the person hasn't registered. Not listed? " \
                       u"<a href='%s/@@register'>Register</a>. 2) Two board " \
                       u"members must have the \"Good Practices Training\" before the club can be " \
-                      u"approved. You may submit your application, and it " \
+                      u"approved. You may submit your application, and board approval for your club " \
                       u"will be held until this requirement is met. 3) One person may hold up to " \
                       u"two Officer positions." % portal_url
 
@@ -103,27 +103,24 @@ class IBoosterProposalForm(form.Schema):
     # )
 
     fieldset('financial_information',
-        label=u'Financial Information',
-        description=u'All booster clubs must satisfy the following criteria:'
-                    u'<ul><li>1. Your group maintain a dedicated checking account.</li>'
-                    u'<li>2. Two officers review expenditures.</li>'
-                    u'<li>3. Two officers review revenues.</li></ul>',
-        fields=['dedicated_checking', 'review_officers', 'review_revenue',
-                'review_officer_one', 'review_officer_two']
+             label=u'Financial Information',
+             description=u'All booster clubs must satisfy the following criteria:',
+             fields=['dedicated_checking', 'review_officers', 'review_revenue',
+                     'review_officer_one', 'review_officer_two']
     )
 
     dedicated_checking = schema.Bool(
-        title=_(u'1. Does your group maintain a dedicated checking account?'),
+        title=_(u'1. Maintain a dedicated checking account (opened within 30 days of club approval).'),
         description=_(u''),
         constraint=validateAccept)
 
     review_officers = schema.Bool(
-        title=_(u'2. Do two officers review expenditures?'),
+        title=_(u'2. Two officers review expenditures.'),
         description=_(u''),
         constraint=validateAccept)
 
     review_revenue = schema.Bool(
-        title=_(u'3. Do two officers review revenues?'),
+        title=_(u'3. Two officers review revenues.'),
         description=_(u''),
         constraint=validateAccept)
 
@@ -302,7 +299,8 @@ class BoosterProposalForm(form.SchemaForm):
         if exception_caught:
             info_message = "There was a problem with your proposal, please contact the site administrator."
         else:
-            info_message = "Your proposal for the club, %s, has been submitted." % club_title
+            info_message = "Your proposal for the club, %s, The Executive Board will review the " \
+                           "proposal shortly." % club_title
 
         api.portal.show_message(message=info_message,
                                 request=request,

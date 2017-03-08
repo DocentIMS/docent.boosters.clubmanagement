@@ -54,7 +54,6 @@
                 <th tal:condition="not:isAnon">President</th>
                 <th>Attendance</th>
                 <th>LWHS Activity</th>
-                <th>Date Approved</th>
             </tr>
             <tr tal:repeat="active_club active_clubs"
                 tal:attributes="class repeat/active_club/parity">
@@ -63,15 +62,14 @@
                 <td tal:condition="not:isAnon" tal:content="structure python:view.getPresidentEmail(active_club)"></td>
                 <td tal:content="active_club/attendanceRecord"></td>
                 <td tal:content="active_club/booster_organization|nothing"></td>
-                <td tal:content="active_club/approval_date|nothing"></td>
             </tr>
         </table>
     </section>
     <section tal:condition="show_approved">
         <h2>Approved</h2>
         <p>These approved clubs have been approved by the LWHS Executive Boosters; however, two club board members have
-            not completed the LWHS Boosters “Best Practices Training”. Please schedule the training with the
-            <a href="mailto:treasurer@lwhsboosters.org">Executive Treasurer</a>.</p>
+            not completed the LWHS Boosters “Best Practices Training”. Please schedule
+            <a href="" tal:attributes="href string:${context/absolute_url}/@@training-signup">Best Practices Training</a>.</p>
         <p>Approved clubs are not Active and may not raise and spend money under the LWHS Booster non-profit status.</p>
         <table>
             <tr>
@@ -79,7 +77,6 @@
                 <th tal:condition="not:isAnon">President</th>
                 <th>Attendance</th>
                 <th>LWHS Activity</th>
-                <th>Date Approved</th>
             </tr>
             <tr tal:repeat="approved_club approved_clubs"
                 tal:attributes="class repeat/approved_club/parity">
@@ -87,7 +84,6 @@
                 <td tal:condition="not:isAnon" tal:content="structure python:view.getPresidentEmail(approved_club)"></td>
                 <td tal:content="approved_club/attendanceRecord"></td>
                 <td tal:content="approved_club/booster_organization|nothing"></td>
-                <td tal:content="approved_club/approval_date|nothing"></td>
             </tr>
         </table>
     </section>
@@ -99,14 +95,12 @@
                 <th>Club Name</th>
                 <th tal:condition="not:isAnon">President</th>
                 <th>LWHS Activity</th>
-                <th>Date Approved</th>
             </tr>
             <tr tal:repeat="pending_club pending_clubs"
                 tal:attributes="class repeat/pending_club/parity">
                 <td><a href="#" tal:attributes="href pending_club/absolute_url"><span tal:replace="pending_club/Title" /></a></td>
                 <td tal:condition="not:isAnon" tal:content="structure python:view.getPresidentEmail(pending_club)"></td>
                 <td tal:content="pending_club/booster_organization|nothing"></td>
-                <td tal:content="pending_club/approval_date|nothing"></td>
             </tr>
         </table>
     </section>
@@ -118,14 +112,12 @@
                 <th>Club Name</th>
                 <th tal:condition="not:isAnon">President</th>
                 <th>LWHS Activity</th>
-                <th>Date Approved</th>
             </tr>
             <tr tal:repeat="draft_club draft_clubs"
                 tal:attributes="class repeat/draft_club/parity">
                 <td><a href="#" tal:attributes="href draft_club/absolute_url"><span tal:replace="draft_club/Title" /></a></td>
                 <td tal:condition="not:isAnon" tal:content="structure python:view.getPresidentEmail(draft_club)"></td>
                 <td tal:content="draft_club/booster_organization|nothing"></td>
-                <td tal:content="draft_club/approval_date|nothing"></td>
             </tr>
         </table>
     </section>
@@ -138,14 +130,12 @@
                 <th>Club Name</th>
                 <th tal:condition="not:isAnon">President</th>
                 <th>LWHS Activity</th>
-                <th>Date Approved</th>
             </tr>
             <tr tal:repeat="archived_club archived_clubs"
                 tal:attributes="class repeat/archived_club/parity">
                 <td><a href="#" tal:attributes="href archived_club/absolute_url"><span tal:replace="archived_club/Title" /></a></td>
                 <td tal:condition="not:isAnon" tal:content="structure python:view.getPresidentEmail(archived_club)"></td>
                 <td tal:content="archived_club/booster_organization|nothing"></td>
-                <td tal:content="archived_club/approval_date|nothing"></td>
             </tr>
         </table>
     </section>
@@ -162,8 +152,8 @@
         </ul>
     </section>
     <section tal:condition="training_record_brains" id="training_records">
-        <h2>Best Practices Training Records</h2>
-        <p>These are the attendance records for LHWS Booster Bester Practices Trianing.</p>
+        <h2>Training Record</h2>
+        <p>These are the attendance records for LHWS Booster Bester Practices Training.</p>
         <p>Emails are automatically sent to all members that did not attend the meeting."</p>
         <ul>
             <li tal:repeat="training_record training_record_brains">

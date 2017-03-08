@@ -1,25 +1,17 @@
-from collections import defaultdict, Counter
 from datetime import date
 import logging
 
 from plone import api
-from plone.api.exc import MissingParameterError
+from plone.api.exc import (MissingParameterError,
+                           UserNotFoundError)
 from plone.dexterity.content import Item
 from plone.directives import form
-from plone.indexer import indexer
-from plone.namedfile.field import NamedBlobFile
-from Products.CMFCore.utils import getToolByName
 from zope import schema
 
-from zope.schema.vocabulary import SimpleVocabulary
-from zope.schema.interfaces import IVocabularyFactory
-from zope.interface import implementer
-from zope.interface import implements
 
 from docent.boosters.clubmanagement import _
-from docent.boosters.clubmanagement.content.bootser_club import IBoosterClub
-from docent.group.vocabularies.app_config import TRAINING_MEMBERS_GROUP_ID
-
+from docent.group.vocabularies.app_config import (TRAINING_MEMBERS_GROUP_ID,
+                                                  TRAINED_MEMBERS_GROUP_ID)
 
 logger = logging.getLogger("Plone")
 
@@ -125,6 +117,41 @@ class TrainingRecord(Item):
             booster_secretary_email = getattr(parent_container, 'executive_secretary_email', '')
             email_errors =[]
             members_emailed = []
+
+            for attending_member_id in members_present:
+                #remove from training group
+                remove_user_error = False
+                add_user_error = False
+
+                try:
+                    api.group.remove_user(groupname=TRAINING_MEMBERS_GROUP_ID,
+                                          username=attending_member_id)
+                except ValueError:
+                    remove_user_error = True
+                except UserNotFoundError:
+                    remove_user_error = True
+
+                try:
+                    api.group.add_user(groupname=TRAINED_MEMBERS_GROUP_ID,
+                                       username=attending_member_id)
+                except ValueError:
+                    add_user_error = True
+                except UserNotFoundError:
+                    add_user_error = True
+
+                if remove_user_error or add_user_error:
+                    a_member_obj = api.user.get(username=attending_member_id)
+                    am_fullname = a_member_obj.getProperty('fullname')
+                    if remove_user_error:
+                        rue_msg = "There was a problem removing %s from the Training group." % am_fullname
+                        api.portal.show_message(message=rue_msg,
+                                        request=context.REQUEST,
+                                        type='warn')
+                    if add_user_error:
+                        aue_msg = "There was a problem adding %s to the Trained group." % am_fullname
+                        api.portal.show_message(message=aue_msg,
+                                        request=context.REQUEST,
+                                        type='warn')
 
             for member_id in members_absent:
                 #get the club
