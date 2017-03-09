@@ -114,7 +114,7 @@ class TrainingRecord(Item):
             #remove from training group
             remove_user_error = False
             add_user_error = False
-            
+
             try:
                 api.group.remove_user(groupname=TRAINING_MEMBERS_GROUP_ID,
                                       username=attending_member_id)

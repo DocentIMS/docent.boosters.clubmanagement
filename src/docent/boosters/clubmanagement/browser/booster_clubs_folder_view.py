@@ -9,6 +9,7 @@ from docent.boosters.clubmanagement.content.attendance_record import IAttendance
 from docent.boosters.clubmanagement.content.training_record import ITrainingRecord
 
 from docent.boosters.clubmanagement.browser.booster_club_view import getMemberNameAndEmail
+from docent.group.vocabularies.app_config import BOOSTER_MEMBERS_GROUP_ID
 
 logger = logging.getLogger("Plone")
 
@@ -97,7 +98,7 @@ class View(grok.View):
 
         isBoosterMember = False
         for user_group in current_user_groups:
-            if user_group.getId() == "Booster_Members":
+            if user_group.getId() == BOOSTER_MEMBERS_GROUP_ID:
                 isBoosterMember = True
 
         self.active_club_objs = active_club_objs
