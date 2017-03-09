@@ -110,6 +110,41 @@ class TrainingRecord(Item):
         members_absent = set(expected_members_by_id) - set(members_present)
         setattr(context, 'members_absent', list(members_absent))
 
+        for attending_member_id in members_present:
+            #remove from training group
+            remove_user_error = False
+            add_user_error = False
+            
+            try:
+                api.group.remove_user(groupname=TRAINING_MEMBERS_GROUP_ID,
+                                      username=attending_member_id)
+            except ValueError:
+                remove_user_error = True
+            except UserNotFoundError:
+                remove_user_error = True
+
+            try:
+                api.group.add_user(groupname=TRAINED_MEMBERS_GROUP_ID,
+                                   username=attending_member_id)
+            except ValueError:
+                add_user_error = True
+            except UserNotFoundError:
+                add_user_error = True
+
+            if remove_user_error or add_user_error:
+                a_member_obj = api.user.get(username=attending_member_id)
+                am_fullname = a_member_obj.getProperty('fullname')
+                if remove_user_error:
+                    rue_msg = "There was a problem removing %s from the Training group." % am_fullname
+                    api.portal.show_message(message=rue_msg,
+                                    request=context.REQUEST,
+                                    type='warn')
+                if add_user_error:
+                    aue_msg = "There was a problem adding %s to the Trained group." % am_fullname
+                    api.portal.show_message(message=aue_msg,
+                                    request=context.REQUEST,
+                                    type='warn')
+
         if members_absent:
             setattr(context, 'missing_member_data', members_absent)
 
@@ -117,41 +152,6 @@ class TrainingRecord(Item):
             booster_secretary_email = getattr(parent_container, 'executive_secretary_email', '')
             email_errors =[]
             members_emailed = []
-
-            for attending_member_id in members_present:
-                #remove from training group
-                remove_user_error = False
-                add_user_error = False
-
-                try:
-                    api.group.remove_user(groupname=TRAINING_MEMBERS_GROUP_ID,
-                                          username=attending_member_id)
-                except ValueError:
-                    remove_user_error = True
-                except UserNotFoundError:
-                    remove_user_error = True
-
-                try:
-                    api.group.add_user(groupname=TRAINED_MEMBERS_GROUP_ID,
-                                       username=attending_member_id)
-                except ValueError:
-                    add_user_error = True
-                except UserNotFoundError:
-                    add_user_error = True
-
-                if remove_user_error or add_user_error:
-                    a_member_obj = api.user.get(username=attending_member_id)
-                    am_fullname = a_member_obj.getProperty('fullname')
-                    if remove_user_error:
-                        rue_msg = "There was a problem removing %s from the Training group." % am_fullname
-                        api.portal.show_message(message=rue_msg,
-                                        request=context.REQUEST,
-                                        type='warn')
-                    if add_user_error:
-                        aue_msg = "There was a problem adding %s to the Trained group." % am_fullname
-                        api.portal.show_message(message=aue_msg,
-                                        request=context.REQUEST,
-                                        type='warn')
 
             for member_id in members_absent:
                 #get the club
