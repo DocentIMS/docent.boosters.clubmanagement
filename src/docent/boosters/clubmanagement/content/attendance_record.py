@@ -54,6 +54,14 @@ class IAttendanceRecord(form.Schema):
         required=True,
     )
 
+    form.mode(clubs_attended='hidden')
+    clubs_attended = schema.List(
+        title=_(u'Clubs Absent'),
+        description=_(u"UID of teams not attending the meeting."),
+        value_type=schema.ASCIILine(),
+        required=False,
+    )
+
     form.mode(clubs_absent='hidden')
     clubs_absent = schema.List(
         title=_(u'Clubs Absent'),
@@ -123,6 +131,7 @@ class AttendanceRecord(Item):
         [expected_clubs_by_uid.append(ec_brain.UID) for ec_brain in expected_clubs]
 
         clubs_present = getattr(context, 'clubs_present', [])
+        setattr(context, 'clubs_attended', clubs_present)
 
         clubs_absent = set(expected_clubs_by_uid) - set(clubs_present)
         setattr(context, 'clubs_absent', list(clubs_absent))

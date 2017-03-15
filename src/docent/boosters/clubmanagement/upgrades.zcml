@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="docent.boosters.clubmanagement">
+
+<genericsetup:upgradeStep
+        title="Update Boosters ClubManagement to 1001"
+        description="Update existing clubs."
+        source="*"
+        destination="1001"
+        handler=".upgrades.updateClubManagementOneToOne"
+        profile="docent.boosters.clubmanagement:default" />
+
+</configure>

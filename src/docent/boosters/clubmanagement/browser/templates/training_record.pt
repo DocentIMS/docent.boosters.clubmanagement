@@ -22,7 +22,7 @@
     <h1 tal:content="context/Title">TITLE</h1>
     <div tal:replace="structure provider:plone.belowcontenttitle" />
     <div tal:replace="structure provider:plone.abovecontentbody" />
-    <tal:recordblock tal:define="present_html view/members_present_html;
+    <tal:recordblock tal:define="present_html view/members_attended_html;
                                  absent_html view/members_absent_html;
                                  missing_data view/missing_member_data_string;
                                  summary_html view/description_html">

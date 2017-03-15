@@ -10,6 +10,7 @@
   <i18n:registerTranslations directory="locales" />
 
   <includeDependencies package="." />
+  <include file="upgrades.zcml" />
 
   <grok:grok package="." />
 

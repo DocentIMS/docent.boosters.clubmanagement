@@ -17,19 +17,20 @@ class View(grok.View):
         context = self.context
 
         clubs_present = getattr(context, 'clubs_present', [])
+        clubs_attended = getattr(context, 'clubs_attended', [])
         clubs_absent = getattr(context, 'clubs_absent', [])
         club_officers_emailed = getattr(context, 'club_officers_emailed', [])
         missing_member_data = getattr(context, 'missing_member_data', [])
 
-        clubs_present_brains = []
-        if clubs_present:
-            [clubs_present_brains.append(uuidToCatalogBrain(p_uuid)) for p_uuid in clubs_present]
+        clubs_attended_brains = []
+        if clubs_attended:
+            [clubs_attended_brains.append(uuidToCatalogBrain(p_uuid)) for p_uuid in clubs_attended]
 
         clubs_absent_brains = []
         if clubs_absent:
             [clubs_absent_brains.append(uuidToCatalogBrain(a_uuid)) for a_uuid in clubs_absent]
 
-        self.clubs_present_brains = clubs_present_brains
+        self.clubs_attended_brains = clubs_attended_brains
         self.clubs_absent_brains = clubs_absent_brains
 
         if club_officers_emailed:

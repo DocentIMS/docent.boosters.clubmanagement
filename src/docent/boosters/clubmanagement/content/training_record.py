@@ -47,6 +47,14 @@ class ITrainingRecord(form.Schema):
         required=True,
     )
 
+    form.mode(members_attended='hidden')
+    members_attended = schema.List(
+        title=_(u'Members Attended'),
+        description=_(u"Booster Members Attended"),
+        value_type=schema.ASCIILine(),
+        required=False,
+    )
+
     form.mode(members_absent='hidden')
     members_absent = schema.List(
         title=_(u'Members Absent'),
@@ -109,6 +117,7 @@ class TrainingRecord(Item):
 
         members_absent = set(expected_members_by_id) - set(members_present)
         setattr(context, 'members_absent', list(members_absent))
+        setattr(context, 'members_attended', members_present)
 
         for attending_member_id in members_present:
             #remove from training group

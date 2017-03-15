@@ -19,15 +19,22 @@ class View(grok.View):
         context = self.context
 
         members_present = getattr(context, 'members_present', [])
+        members_attended = getattr(context, 'members_attended', [])
         members_absent = getattr(context, 'members_absent', [])
         members_emailed = getattr(context, 'members_emailed', [])
         missing_member_data = getattr(context, 'missing_member_data', [])
 
-        members_present_html = ""
-        if members_present:
-            for member_id in members_present:
-                members_present_html += "<li>%s</li>" % getMemberNameAndEmail(member_id)
-        self.members_present_html = members_present_html
+        members_attended_html = ""
+        if members_attended:
+            for member_id in members_attended:
+                members_attended_html += "<li>%s</li>" % getMemberNameAndEmail(member_id)
+        else:
+            if api.content.get_state(obj=context) == 'private':
+                members_attended_html += "<li>Please publish the training record to generate attendees.</li>"
+            else:
+                members_attended_html += "<li>There are no attendees for this record.</li>"
+
+        self.members_attended_html = members_attended_html
 
         members_absent_html = ""
         if members_absent:
