@@ -101,7 +101,7 @@ class TrainingSignupForm(form.SchemaForm):
 
             location = getattr(next_bpt_obj, 'location')
             if location:
-                msg += " The training is located at: %s." % location
+                msg += " The training is usually at LWHS in Room 162.  Please confirm the location on our website:  http://lwhsboosters.org/events."
 
             msg += "\n\nYou have been granted access to the Best Practices " \
                    "Training materials at: %s/training." % portal.absolute_url()

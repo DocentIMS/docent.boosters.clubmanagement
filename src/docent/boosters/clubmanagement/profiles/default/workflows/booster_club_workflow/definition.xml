@@ -237,8 +237,7 @@
   <description>Transition draft or archived states to pending.</description>
   <action url="%(content_url)s/content_status_modify?workflow_action=submit" category="workflow" icon="">Submit</action>
   <guard >
-   <guard-expression>here/verifyClubOfficers</guard-expression
-   >
+   <guard-expression>here/verifyClubOfficers</guard-expression>
   </guard>
   
  </transition>

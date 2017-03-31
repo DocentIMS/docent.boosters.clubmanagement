@@ -20,14 +20,18 @@ def getGroupMemberVocabulary(group_name):
     except GroupNotFoundError:
         group_members = ()
 
+    member_fullname_by_id_dict = {}
+    for member_data in set(group_members):
+        member_id = member_data.getId()
+        member_fullname = member_data.getProperty('fullname')
+        member_fullname_by_id_dict.update({member_id:member_fullname})
+
     terms = []
 
-    if group_members:
-        for member_data in group_members:
-            member_id = member_data.getId()
-            member_fullname = member_data.getProperty('fullname')
-
-            terms.append(SimpleVocabulary.createTerm(member_id, str(member_id), member_fullname))
+    if member_fullname_by_id_dict:
+        terms.append(SimpleVocabulary.createTerm('', '', 'Choose One'))
+        for id_key, name_value in sorted(member_fullname_by_id_dict.iteritems(), key=lambda (k,v): (v,k)):
+            terms.append(SimpleVocabulary.createTerm(id_key, str(id_key), name_value))
     else:
         terms.append(SimpleVocabulary.createTerm('no_members', 'no_members', 'No Members'))
 
